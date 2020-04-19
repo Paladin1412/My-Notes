@@ -10,30 +10,27 @@
   <meta name="viewport"
     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
+  <!--<link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/prism.css">-->
 </head>
 
 <body>
   <div id="app"></div>
+  <!-- docsify-edit-on-github -->
+  <script src="//unpkg.com/docsify-edit-on-github/index.js"></script>
   <script>
     window.$docsify = {
       name: '学习笔记',
-      repo: '',
-      coverpage: true,//封面,_coverpage.md
-      loadNavbar: true, // 顶部栏
-      //onlyCover: true,
-      maxLevel: 3,//最大支持渲染的标题层级
-      auto2top: true,//切换页面后是否自动跳转到页面顶部
-      //ga: 'UA-138586553-1',
-      //logo: 'https://my-blog-to-use.oss-cn-beijing.aliyuncs.com/2019-3logo-透明.png' ,
+      //repo: 'https://mrwangdonghao.github.io/My-Notes/',  // 链接跳转
+      maxLevel: 3,                                          //最大支持渲染的标题层级
+      coverpage: true,                                      // 封面 _coverpage.md
+      auto2top: true,                                       // 切换页面自动跳转到页面顶部
       search: {
-        //maxAge: 86400000, // 过期时间，单位毫秒，默认一天
+        //maxAge: 86400000,                                 // 过期时间单位毫秒，默认一天
         paths: 'auto',
         placeholder: '搜索',
-        noData: '找不到结果',
-        // 搜索标题的最大程级, 1 - 6
-        depth: 3,
-      },
-
+        noData: '找不到结果',   
+        depth: 4,                                           // 搜索标题的最大程级, 1 - 6
+      }
     }
   </script>
   <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
@@ -45,6 +42,10 @@
   <script src="//unpkg.com/docsify" data-ga="UA-138586553-1"></script>
   <script src="//unpkg.com/docsify/lib/plugins/ga.js"></script>
   -->
+  <!-- 复制到剪贴板 -->
+  <script src="//unpkg.com/docsify-copy-code"></script>
+  <!-- 图片缩放 -->
+  <script src="//unpkg.com/docsify/lib/plugins/zoom-image.js"></script>
 </body>
 
 </html>

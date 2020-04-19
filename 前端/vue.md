@@ -1,12 +1,13 @@
 # vue
 
+## 前端框架
+
 ### 什么是前端框架
 
 前端开发进化过程： **原生JS 》jQuery 等类库 》Vue 等前端框架**
 
 - jQuery 等类库提供了已封装好的 JS 方法集合，用户在前端开发中可以直接调用（可以使用多个）。
 - Vue 等前端框架提供了完整的项目解决方案，用户在前端开发中必须按照特定框架规范进行开发（只能选择一个）。
-
 
 目前主流的前端框架有 Vue 、 React 、 Angular 。
 
@@ -42,7 +43,6 @@ vue-cli 是基于 Node.js 的 vue 快捷开发工具（必须首先安装 Node.j
 ### vue 项目结构
 
 vue 项目由上述两种方式自动创建，其项目结构如下：
-
 
 - **node_module 文件夹**  / 依赖包目录
 
@@ -600,6 +600,28 @@ axios.post('/post',{
 - ret.status : 响应状态码
 - ret.statusText : 响应状态信息
 
+使用 asyns/await 将 axios 异步请求同步化
+
+
+```js
+async getHistoryData (data) {
+      try {
+        let res = await axios.get('/api/survey/list/', {
+          params: data
+        })
+        this.tableData = res.data.result
+        this.totalData = res.data.count
+      } catch (err) {
+        console.log(err)
+        alert('请求出错！')
+      }
+    }
+```
+
+
+表单自带校验方法 validate(callback){ 直接返回 Promise 对象}，默认 valid 为 true 通过。一旦错误直接
+
+
 **拦截器**
 
 对请求或者响应进行加工处理。
@@ -645,19 +667,14 @@ axios.intercepter.response.use(function(res){
 
 ### vue router 插件
 
-vue 深度集成了官方路由管理器 vue router。
+vue 深度集成了官方路由管理器 vue router。可选【使用用户操作历史或哈希存储历史访问】.
 
 ```html
 <!--引入 vue router-->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue-router.js"></script>
 ```
 
-【使用用户操作历史或哈希存储历史访问】可选
-
-
-点击切换页面
-
-
+开发者在专用的路由 js 文件中定义路由规则。
 
 ```js
 <script>
@@ -680,6 +697,8 @@ vue 深度集成了官方路由管理器 vue router。
   })
 </script>
 ```
+
+在 vue 组件中，点击 router-link 组件实现页面跳转，预留的 router-view 区域将显示指定组件。
 
 ```html
 <div id="app">
@@ -769,11 +788,86 @@ const User = {
 `<router-link :to="{name:'user',params:{id:3}}">User</router-link>`
 
 
+### 路由语句执行
+
+#### $route 查询路由信息
+
+在 vue 组件中，可以通过 $route 查询当前路由的详细信息。在组件内，即 this.$route 。
+
+对于路由 /list/type/11?favorite=yes 
+
+{
+  path:'/list/type/:id',
+  name:'user',  // 路由命名
+  component: User, 
+  props:true
+}
+    
+    
+$route.path  （字符串）返回绝对路径  $route.path='/list/type/11'
+
+$route.params （对象）动态路径键值对   $route.params.id == 11 
+
+$route.query  （对象）查询参数键值对  $route.query.favorite == 'yes' 
+
+$route.name   （对象）路径名，没有则为空。 $route.name == 'user'
+
+$route.router    路由规则所属的路由器（以及其所属的组件）。
+$route.matched    数组，包含当前匹配的路径中所包含的所有片段所对应的配置参数对象。
+
+
+
+#### $router 执行路由跳转
+
+在 vue 组件中，可以通过调用全局路由对象 $router 查的方法实现页面跳转。
+
+push 方法和 <router-link :to="..."> 等同，执行时跳转指定页面。
+
+this.$router.push('home')                                                /home
+this.$router.push({ path: 'home' })                                      /home
+this.$router.push({ path: 'home', query: { plan: '123' }})               /home?plan=123（附带查询参数）
+this.$router.push({ name: 'user', params: { id: 123 }})                  /list/type/123（根据命名跳转可以附带动态路径）
+
+
+
+go 方法根据历史记录，跳转上一个或下一个页面。
+
+this.$router.go(-1)                  返回之前的页面
+
+replace 方法替换当前的页面，和 push 方法的不同在于不会历史记录（一般用于 404 页面）。
+
+this.$router.replace('/')
+
+
+
 ---
 
+### Element UI 组件库
+
+$ 符 用来绑定事件
+
+this.$refs.tree.getCheckedKeys());  
+
+$refs代表一个引用：tree表示组件中某个元素（ref属性设为tree）,然后我们可以通过对象调用方法。
+
+https://www.cnblogs.com/my466879168/p/12091439.html 局部修改css 样式
+
+<style lang="scss">
+@import '../../styles/custom-menu.scss';
+  .menu-form .el-form-item__label {
+      text-align: left!important;
+      font-size: 20px!important;
+      color: #000!important;
+      font-weight: normal!important;
+}
+</style>
 
 
 
 
 
+
+
+
+在属性前加冒号，表示此属性的值是变量或表达式，如果不加，就认为是字符串，所以抛错。!!!!!!!!
 

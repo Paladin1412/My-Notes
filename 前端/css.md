@@ -25,6 +25,11 @@ div h1 { font-weight:bold; }
 </style>
 ```
 
+.important.warning {background:silver;}  （无空格隔开）同时是两个类的元素才触发样式（同时）
+
+.important .warning {background:silver;}  （空格隔开）important 类中的 warning 类元素才触发样式（嵌套）
+
+
 ## 定位方式
 
 1. 静态定位(static)：默认情况，元素从上到下依次放入 html 页面。
