@@ -3,27 +3,25 @@
 
 ## 什么是 Git
 
-**Git**: 可以对代码进行版本管理和多人协作的代码仓库.
+- **Git**: 可以对代码进行版本管理和多人协作的代码仓库.
 
-**GitHub**: 以 Git 为基础，允许在线对代码进行版本管理和多人协作的远程代码仓库。
+- **GitHub**: 以 Git 为基础，允许在线对代码进行版本管理和多人协作的远程代码仓库。
 
 ## 安装和配置 Git
 
-### 注册 GitHub 账号
-   
-官方网址：https://github.com/
-
-### 安装 Git Bash 工具
+### Git Bash 工具
 
 下载地址：https://git-scm.com/
 
-### 配置环境变量
+如果想要直接在控制台输入 git 命令而不必打开 Git Bash 工具，还需要配置环境变量：
 
-（windows 系统）系统变量 > Path  添加 cmd 文件夹路径： D:\Software\Git\cmd
+- （windows 系统）在 系统变量 > Path 添加 cmd 文件夹路径（如 D:\Software\Git\cmd）。
 
-*配置环境变量后，可以在控制台直接输入 git 命令。*
+### GitHub 网站
+   
+官方网址：https://github.com/
 
-### 绑定 Git 和 GitHub
+注册账号后，还需要和本地 Git 进行绑定，从而允许本地仓库对远程代码进行修改：
 
 1. 控制台输入 `ssh-keygen -t rsa -b 4096 -C "email@example.com"` 生成密钥（根据 github 邮箱）。
 
@@ -31,11 +29,10 @@
 
 3. 在 GitHub 账号 SSH and GPG keys 选项 添加密钥。
 
-*绑定 Git 和 GitHub 后，GitHub 账号将允许本地仓库对远程代码进行修改。*
 
 ## 使用 Git
 
-### 本地项目
+### 本地记录
 
 本地 Git 分为暂存区和 git 仓库。
 
@@ -51,7 +48,7 @@ git commit -m "Your commit"                // 提交文件，放入 git 仓库
 git log                                    // 查看提交历史
 ```
 
-### 分支
+### 分支管理
 
 在创建仓库的时候，默认使用主分支 master。
 
