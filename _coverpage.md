@@ -1,4 +1,4 @@
-![logo](_media/favicon.ico) 
+![logo](_public/favicon.ico) 
 
 # JAVA 学习笔记
 
@@ -10,4 +10,4 @@
 
 <!--background-->
 
-![](_media/piano.jpg)
+![](_public/img/piano.jpg)
