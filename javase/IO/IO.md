@@ -58,18 +58,26 @@ System.in.read(b);                 // 读取输入定长字符组，返回字符
 ```java 
 System.out.print("hello");                         // 输出数据
 System.out.println("hello");                       // 输出数据并换行
-System.out.format("The number is %+,9.3f%n", PI);  // 输出指定格式数据
 ```
+
+**格式化输出**
+
+通过 printf 方法可以输出指定格式数据：其中 `%d` 表示整型数字， `%f` 表示浮点型数字， `%%` 表示百分号。
+
+在百分号后加入特殊符号，可以指定数据的显示类型。
 
 符号|作用|示例|效果
 -|-|-|-
 +|为正数或者负数添加符号|("%+d",99)|+99
-Num|位数（默认右对齐）|("%4d", 99)|__99
+2|位数（默认右对齐）|("%4d", 99)|__99
 −|左对齐|("%-4d", 99)|99__
 0|数字前补0|("%04d", 9999)|0099
 ,|以“,”对数字分组|("%,d", 9999)|9,999
-.Num|小数点后精确位数|("%5.2f", 9.999)|_9.99
+.2|小数点后精确位数|("%5.2f", 9.999)|_9.99
 
+```java
+System.out.printf("The number is %+,9.3f", PI);  // 输出指定格式数据
+```
 
 ---
 
@@ -255,7 +263,9 @@ class TestBuffer{
 
 ```java
 Scanner sc = new Scanner(System.in);                             // 读取键盘输入，返回 String 数据类型                  
-Scanner sc = new Scanner(new FileInputStream("example.txt");     // 读取文件信息，返回 String 数据类型
+Scanner sc = new Scanner(new FileInputStream("example.txt"));     // 读取文件信息，返回 String 数据类型
+
+sc.hasNextInt();
 
 int n = sc.nextInt();                                            // 截取数据并自动转化数据类型
 String str = sc.nextLine();                                      // 取出行内全部数据

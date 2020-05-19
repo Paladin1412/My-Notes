@@ -2,27 +2,32 @@
 
 进一步对Spring中的操作进行封装，通过注解（@）取代xml文件进行自动配置，简化编程。
 
-默认映射路径为：
+---
 
-"classpath:/META-INF/resources/"
-"classpath:/resources/"
-"classpath:/static/" 
-"classpath:/public/"
-优先级顺序为：META-INF/resources > resources > static > public
+## 默认映射路径
+
+- `classpath:/META-INF/resources/`
+- `classpath:/resources/`
+- `classpath:/static/` 
+- `classpath:/public/`
+
+优先级顺序：META-INF/resources > resources > static > public
 
 ---
 
 ## 全局配置
 
-resources文件夹下 application.properties或application.yml
-(两种格式spring boot都会自动加载)
+resources 文件夹下，支持以下两种格式。由 Spring Boot 自动加载。
+
+1. application.properties
+2. application.yml
+
 ```properties
 #端口号
 server.port=8080
 #访问前缀
 server.servlet.context-path=/demo
 
-#DataSource
 #数据库驱动
 jdbc.driver=com.mysql.jc.jdbc.Driver
 #数据库链接
@@ -40,6 +45,7 @@ mapper_path=/mapper/**.xml
 #实体类所在包
 type_alias_package=com.example.demo.entity
 ```
+
 JDBC连接Mysql5驱动： com.mysql.jdbc.Driver
 JDBC连接Mysql6驱动： com.mysql.cj.jdbc.Driver, URL必须要指定时区serverTimezone！
 
@@ -49,9 +55,13 @@ JDBC连接Mysql6驱动： com.mysql.cj.jdbc.Driver, URL必须要指定时区serv
 ## 启动类
 
 
+ `@SpringBootApplication` 类：作为程序入口，在创建 Spring Boot 项目时自动创建。
+
+ 等同于 `@Configuration` + `@EnableAutoConfiguration` + `@ComponentScan` ，会自动完成配置并扫描路径下所有包。
+
 ```java
 //DemoApplication.class
-//程序入口，由IDEA自动创建
+//
 
 @SpringBootApplication
 public class DemoApplication {
@@ -62,12 +72,6 @@ public class DemoApplication {
 
 }
 ```
-- `@SpringBootApplication`：声明让spring boot自动配置，等同于：
-  `@Configuration`  声明配置类
-  `@EnableAutoConfiguration` 允许自动配置  
-  `@ComponentScan`  扫描路径下所有包（即下方所有开发者写的java文件）
-
-
 
 
 ---
@@ -360,55 +364,8 @@ public class TransactionManagementConfiguration implements TransactionManagement
 ```
 </details>
 
-- `@EnableTransactionManagement`：开启事务管理<font size=2>（方法上添加注解 @Transactional）</font>
+- `@EnableTransactionManagement`：开启事务管理（方法上添加注解 @Transactional）
 
-<details>
-<summary>2. 定义事务接口，规定事务操作(可选)</summary>
-
-```java
-//PersonService.java(service文件夹)
-
-public interface PersonService {
-
-    /**
-     * 获取person列表
-     * @return
-     */
-    List<Person> getPersonList();
-
-    /**
-     * 通过ID获取person信息
-     * @param Person_Id
-     * @return
-     */
-    Person getPersonById(int Person_Id);
-
-    /**
-     * 增加person信息
-     * @param person
-     * @return
-     */
-    boolean addPerson(Person person);
-
-    /**
-     * 修改person信息
-     * @param person
-     * @return
-     */
-    boolean modifyPerson(Person person);
-
-    /**
-     * 删除person信息
-     * @param person_Id
-     * @return
-     */
-    boolean deletePerson(int person_Id);
-}
-```
-</details>
-
-<details>
-<summary>3. 实现接口类</summary>
 
 ```java
 //PersonServiceImpl.java(service/impl文件夹内)
@@ -493,7 +450,6 @@ public class PersonServiceImpl implements PersonService {
     }
 }
 ```
-</details>
 
 - `@Transactional`：标记类/方法具有事务属性，默认出现RuntimeException则回滚。
   `@Transactional(rollbackFor = Exception.class)`  事务在遇到全部异常(Exception)均回滚。

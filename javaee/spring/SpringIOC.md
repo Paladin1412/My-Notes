@@ -76,10 +76,33 @@ Bean 包含以下参数：Bean 名称(name) 、所代理的类(class) 、以及�
 
 #### Bean 的生命周期
 
-![](bean.jpg)
+Spring 对 Bean 方法进行了抽象和封装，开发者只需要进行配置和调用简单接口，具体实现都交付给 Spring 工厂来管理。
 
+在调用 getBean 方法时，Spring 的工作流大致可分为以下两步：
 
+1. 解析：读 xml 配置，扫描类文件，从配置或者注解中获取 Bean 的定义信息，注册一些扩展功能。
+2. 加载：通过解析完的定义信息获取 Bean 实例。
 
+![](bean.png)
+
+获取 BeanName，对传入的 name 进行解析，转化为可以从 Map 中获取到 BeanDefinition 的 bean name。
+合并 Bean 定义，对父类的定义进行合并和覆盖，如果父类还有父类，会进行递归合并，以获取完整的 Bean 定义信息。
+实例化，使用构造或者工厂方法创建 Bean 实例。
+属性填充，寻找并且注入依赖，依赖的 Bean 还会递归调用 getBean 方法获取。
+初始化，调用自定义的初始化方法。
+获取最终的 Bean，如果是 FactoryBean 需要调用 getObject 方法，如果需要类型转换调用 TypeConverter 进行转化。
+
+#### 循环依赖
+
+整个流程最为复杂的是对循环依赖的解决方案
+
+1. 构造器循环依赖。依赖的对象是通过构造器传入的，发生在实例化 Bean 的时候。
+
+无法解决
+
+2. 设值循环依赖。依赖的对象是通过 setter 方法传入的，对象已经实例化，发生属性填充和依赖注入的时候。
+
+https://www.jianshu.com/p/9ea61d204559
 
 ---
 
@@ -93,20 +116,23 @@ Bean 包含以下参数：Bean 名称(name) 、所代理的类(class) 、以及�
 
 #### 组件扫描
 
-为配置类添加 `@ComponentScan` 注解，启用组件扫描。将根据注解向 IOC 容器添加 Bean，默认扫描本类中的 @Bean 方法。
+为配置类添加 `@ComponentScan` 注解，启用组件扫描。配置类将根据注解向 IOC 容器添加 Bean，默认扫描本类中的 @Bean 方法。
 
 可以指定需要扫描的包，这会扫描包内的所有组件。如 `@ComponentScan(value="com.company.project")`。
 
 
 ### 注册 (setBean)
 
-为类添加 `@Component` 注解，表示该类型被注册为 Bean 。Bean 的名称默认为类名的首字母小写，作用域默认为单例模式。
+
+- **为类添加 `@Component` 注解**
+
+表示该类型被注册为 Bean 。Bean 的名称默认为类名的首字母小写，作用域默认为单例模式。
 
 1. 可以为注册的 Bean 指定名称，等同于 `@Component("car")` 。
 
 2. 可以为注册的 Bean 指定作用域，如 `@Component("prototype")` 。
 
-但 `@Component` 表示的含义太过笼统，一般不推荐使用。我们可以把注解细化为：
+在 Spring MVC 中，我们可以把 `@Component` 细化为：
 
 - `@Controller` 注解：表示展示层的 Bean
 - `@Service` 注解：表示业务层的 Bean
@@ -121,11 +147,14 @@ class Car implements Vehicle{
 }
 ```
 
-还可以为方法添加 `@Bean` 注解，返回类型将被注册为 Bean。Bean 的名称默认为方法名，作用域默认为单例模式。
+- **为方法添加 `@Bean` 注解**
+
+方法返回类型将被注册为 Bean。Bean 的名称默认为方法名，作用域默认为单例模式。
+
+- 可以为注册的 Bean 指定名称，等同于 `@Bean(name = "myFoo")` 。
 
 - 主要用在 @Configuration 注解的类里，也可以用在 @Component 注解的类里。
 
-- 可以为注册的 Bean 指定名称，等同于 `@Bean(name = "myFoo")` 。
 
 
 
@@ -133,7 +162,9 @@ class Car implements Vehicle{
 ### 装配 (getBean)
 
 
-为对象添加 `@Autowired` 注解，表示自动装配。在使用对象时 Spring 将**根据类型**自动查找 Bean 去创建对象，无法找到 Bean 则抛出异常。
+- **为对象添加 `@Autowired` 注解**
+
+表示自动装配。在使用对象时 Spring 将**根据类型**自动查找 Bean 去创建对象，无法找到 Bean 则抛出异常。
 
 1. 如果想要在无法找到 Bean 时返回 null 值，则将注解改为 `@Autowired(required=false)` 。
 
@@ -146,7 +177,9 @@ private Vehicle vehicle;
 ```
 
 
-为对象添加 `@Resource` 注解，表示自动装配。默认按对象名称去查找 Bean，找不到再按类型去查找 Bean。
+- **为对象添加 `@Resource` 注解**
+
+表示自动装配。默认按对象名称去查找 Bean，找不到再按类型去查找 Bean。
 
 1. 注解可以指定按名称或者类型去查找 Bean，如 `@Resource(name="car")` 或者 `@Resource(type=Car.class)`。
 

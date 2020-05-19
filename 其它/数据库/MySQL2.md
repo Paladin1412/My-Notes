@@ -308,6 +308,12 @@ mysql> SELECT * FROM student;                    -- 查询全部数据
 
 #### 条件语句
 
+- DISTINCT 关键字用于对查询结果去重，必须放于所有字段前。只有多个字段全部相等才会被去重。
+  
+```sql
+mysql> SELECT DINTINCE age,sex FROM student;     -- 查询数据并去重
+```
+
 - WHERE 语句用于指定 更新/删除/查询 的操作范围，如果不设定范围将对全部数据进行操作。
 
 ```sql
@@ -318,6 +324,11 @@ mysql> SELECT * FROM student WHERE id [NOT] IN (30, 35 ,50);
 mysql> SELECT * FROM student WHERE grade IS [NOT] NULL;
 ```
 
+- LIKE 语句用于对字符串进行模糊匹配：`%`代表任意多个字符 `_`代表一个字符 `/`代表转义
+
+```sql
+mysql> SELECT * FROM student WHERE name LIKE 'Tom%';
+```
 
 
 ### 高级操作
@@ -333,7 +344,7 @@ min|最小值
 avg|求平均值
 group_concat|组内字符串拼接
 
-1. GROUP 语句指定数据的分组方式，如果不含 GROUP 语句则默认把全部数据合并为一条数据。
+1. GROUP 语句指定数据的分组方式，如果不含则默认把全部数据合并为一条数据。（本质是生成临时表）
 2. AS 关键字为表或者列起别名，可省略。
 3. HAVING 语句对分组后的结果进行筛选。
 
@@ -407,6 +418,10 @@ mysql> (SELECT * FROM student1)
 mysql> SELECT s.id,s.name,c.name
     -> FROM student s JOIN class c
     -> ON e.cid = c.id;
+
+mysql> SELECT * 
+    -> FROM student s, class c 
+    -> WHERE s.id = c.id; 
 ```
 
 - **交叉连接 CROSS JOIN**：未指定连接条件时，视为无连接条件。
@@ -414,6 +429,10 @@ mysql> SELECT s.id,s.name,c.name
 ```sql
 mysql> SELECT *
     -> FROM boy CROSS JOIN girl;                 -- 显示所有交配可能
+
+
+mysql> SELECT *
+-> FROM boy, girl;                               -- 等价写法
 ```
 
 - **外连接 OUTER JOIN**：如果数据不存在，也会出现在连接结果中。
@@ -423,10 +442,17 @@ mysql> SELECT *
   - **FULL JOIN**：两表数据一定显示，没有匹配数据用 null 填充。
 
 ```sql
-mysql> SELECT s.id,s.name,c.name
-    -> FROM student s FULL JOIN class c        -- 没有班级的学生也会显示
-    -> ON e.cid = c.id;
+mysql> SELECT s.id,s.name,c.name                   -- 显示学生的班级信息
+    -> FROM student s LEFT JOIN class c            -- 没有班级的学生也会显示
+    -> ON s.cid = c.id;
+
+-- 先筛选再连接（效率等价，但如果有大量重复值提前筛选可以提高效率）
+mysql> SELECT s.id,s.name,c.name    
+    -> FROM student s LEFT JOIN (SELECT DINTINCT id, name FROM class) c       
+    -> ON s.cid = c.id;
 ```
+
+
 
 ---
 
@@ -505,37 +531,41 @@ mysql> ALTER VIEW view_student
 
 ### 事务
 
+开启事务后，所有输入的 SQL 语句将被认作一个不可分割的整体，在提交时统一执行。
+
+如果在输入过程中出现问题，可以手动进行回滚。在输入过程中可以设置保存点。
+
 ```sql
 -- 事务开启
-    START TRANSACTION; 或者 BEGIN;
-    开启事务后，所有被执行的SQL语句均被认作当前事务内的SQL语句。
+mysql> START TRANSACTION;
+mysql> BEGIN;
 -- 事务提交
-    COMMIT;
+mysql> COMMIT;
 -- 事务回滚
-    ROLLBACK;
-    如果部分操作发生问题，映射到事务开启前。
-
+mysql> ROLLBACK;
 
 -- 保存点
-    SAVEPOINT 保存点名称 -- 设置一个事务保存点
-    ROLLBACK TO SAVEPOINT 保存点名称 -- 回滚到保存点
-    RELEASE SAVEPOINT 保存点名称 -- 删除保存点
-
--- InnoDB自动提交特性设置
-    SET autocommit = 0|1;    0表示关闭自动提交，1表示开启自动提交。
-    - 如果关闭了，那普通操作的结果对其他客户端也不可见，需要commit提交后才能持久化数据操作。
-    - 也可以关闭自动提交来开启事务。但与START TRANSACTION不同的是，
-        SET autocommit是永久改变服务器的设置，直到下次再次修改该设置。(针对当前连接)
-        而START TRANSACTION记录开启前的状态，而一旦事务提交或回滚后就需要再次开启事务。(针对当前事务)
+mysql> SAVEPOINT mypoint;                     -- 设置保存点
+mysql> ROLLBACK TO SAVEPOINT mypoint;         -- 回滚到保存点
+mysql> RELEASE SAVEPOINT mypoint;             -- 删除保存点
+```
 
 
-/* 锁表 */
-表锁定只用于防止其它客户端进行不正当地读取和写入
-MyISAM 支持表锁，InnoDB 支持行锁
+InnoDB 存储引擎支持关闭自动提交，强制开启事务：任何操作都必须要 COMMIT 提交后才能持久化数据，否则对其他客户端不可见。
+
+```sql
+mysql> SET AUTOCOMMIT = 0|1;             -- 0 表示关闭自动提交，1 表示开启自动提交。
+```
+
+#### 锁定
+
+MySQL 可以手动对表/行锁定，防止其它客户端进行不正当地读取和写入。
+
+```sql
 -- 锁定
-    LOCK TABLES tbl_name [AS alias]
+mysql> LOCK TABLES student [AS alias];          
 -- 解锁
-    UNLOCK TABLES
+mysql> UNLOCK TABLES;
 ```
 
 ### 触发器
