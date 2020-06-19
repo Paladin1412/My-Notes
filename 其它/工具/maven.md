@@ -1,44 +1,76 @@
 # Maven
 
-项目管理工具，为项目自动加载需要的Jar包。在IDEA中默认使用。
 
 ---
 
-## JAR文件
+## 第三方文件
 
-JAR 文件即 Java Archive File，是 Java 的一种文档格式。准确说它就是 ZIP 文件，所以叫它文件包。
+### Libraries 库
 
-java程序通过import可以直接调用项目Libraries库里的jar文件（并解析其中的Java代码）使用。
+在 Java 项目开发中，我们需要大量导入其他开发者已经完成的 Java 文件供自己使用。
 
-【指定JDK版本和文件储存位置后，JDK也会以jar的形式保存在Libraries中】
+为便于开发，我们把所有导入的第三方文件放入项目的 Libraries 库中， Java 程序通过 `import` 语句可以直接调用。
+
+*指定 JDK 版本和文件储存位置后，JDK 文件也保存在 Libraries 库中。*
+
+### JAR 文件
+
+(Java Archive File) Java 的一种文档格式。实际是 Java 文件压缩后的 ZIP 文件，又名文件包。
+
+Libraries 库里的第三方文件都是以 jar 文件形式保存，Java 程序导入时会自动解析其中的 Java 代码并使用。
 
 ---
-## Maven配置
 
-Maven 采用 pom.xml 配置文件统一配置
+## Maven
+
+### Maven 功能
+
+项目管理工具，为项目自动加载需要的 Jar 包。
+
+用户只需要在配置文件中注明所需要的第三方文件和路径，Maven 会自动将 JAR 文件导入到项目的 Libraries 库中。
+
+### Maven 配置
+
+在 IDEA 的 Settings/Maven 中，可以对 Maven 进行配置：
+
+1. **Maven 安装位置**：默认为 IDEA 自带，可配置为本地安装。
+2. **XML 配置文件位置**
+3. **Libraries 库位置**
+
+![mavenidea](mavenidea.PNG)
+
+### XML 文件
+
+Maven 采用 XML 配置文件来注明项目所需要的第三方文件和路径。
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <!--
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.9.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
     <groupId>com.example</groupId>
     <artifactId>demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>demo</name>
     <description>Demo project for Spring Boot</description>
+    -->
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.9.RELEASE</version>
+        <relativePath/> 
+    </parent>
+    
 
+    <!-- 相关配置 -->
     <properties>
         <java.version>1.8</java.version>
     </properties>
 
+    <!-- 导入 JAR 包 -->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -53,12 +85,6 @@ Maven 采用 pom.xml 配置文件统一配置
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>2.1.1</version>
         </dependency>
-
-        <!--<dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>mssql-jdbc</artifactId>
-            <scope>runtime</scope>
-        </dependency>-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -100,6 +126,4 @@ Maven 采用 pom.xml 配置文件统一配置
     </pluginRepositories>
 </project>
 ```
----
 
-WebJars统一管理静态资源

@@ -8,6 +8,8 @@
 
 ## 选择器
 
+选择器确定 CSS 样式的作用范围。
+
 ```html
 <div>
   <h1>title</h1>
@@ -17,18 +19,34 @@
 </div>
 
 <style>
-div { letter-spacing:0.5em; }               <!--简单选择器--> 
-.px { font-size:20px; }                     <!--类选择器--> 
-#p1 { color:brown; }                        <!--ID选择器--> 
-[type="button"] { display:block; }          <!--属性选择器--> 
-div h1 { font-weight:bold; }                
+div { letter-spacing:0.5em; }               /* 简单选择器 */
+.px { font-size:20px; }                     /* 类选择器 */ 
+#p1 { color:brown; }                        /* ID 选择器 */ 
+[type="button"] { display:block; }          /* 属性选择器 */             
 </style>
 ```
 
-.important.warning {background:silver;}  （无空格隔开）同时是两个类的元素才触发样式（同时）
+**复杂类选择器**
 
-.important .warning {background:silver;}  （空格隔开）important 类中的 warning 类元素才触发样式（嵌套）
 
+```html
+<p class="important welcome">Hello</p>
+
+<div class="warning">
+  <h1>NO</h1>
+  <p class="text">STOP</p>
+</div>
+
+<style>
+  /* 多重条件触发 */
+  .important.welcome { background:silver; }
+  /* 嵌套条件触发*/
+  div h1 { font-weight:bold; }    
+  .warning .text { background:silver; }
+</style>
+```
+
+---
 
 ## 定位方式
 
@@ -41,6 +59,8 @@ div h1 { font-weight:bold; }
 - `position:absolute;` 设置元素为绝对定位
 - `position:fixed;` 设置元素为固定定位
 
+---
+
 ## 元素框
 
 元素从外到内依次为：**外边距(margin) > 边框(border) > 内边距(padding) > 内容(content)**
@@ -50,6 +70,10 @@ div h1 { font-weight:bold; }
 1. 默认透明。
 2. 上下两元素外边距取最大值：外边距重叠。
 3. 可以取负值：相邻两元素重叠。
+
+- `margin-top:30px;`
+
+---
 
 ## 元素放置
 
@@ -67,10 +91,22 @@ div h1 { font-weight:bold; }
 - `display:inline` 设置为内联元素
 - `display:none` 不摆放该元素
 
+
+*隐藏元素共有三种方式，效果不同：*
+
+- `display:none` 元素不摆放，等同于没有
+- `visibility:hidden` 元素隐藏，不可用但仍占用布局空间
+- `opacity:0` 元素透明，可用但不可见（不透明度0-1）
+
+---
+
 ## 文本样式
 
 `letter-spacing:0.5em;` 字符间距
 `word-spacing:0.5em;` 单词间距（只对英文起作用）
+
+
+---
 
 ## 表格样式
 
