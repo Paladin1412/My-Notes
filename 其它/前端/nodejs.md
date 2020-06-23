@@ -2,30 +2,45 @@
 
 https://www.runoob.com/nodejs/nodejs-tutorial.html
 
-### 什么是 Node.js
+---
+
+## Node.js 
+
+### Node.js 介绍
 
 Node.js 是一个 JavaScript 运行环境，运行在服务端（后端）。用户不再需要后台动态编程语言，只使用 JS 也可以创建自己的后台服务。
 
+官网：https://nodejs.org/zh-cn/ 
 
-官网：https://nodejs.org/zh-cn/
+> 默认下载可执行程序版本，程序会自动配置环境变量，开发者可以直接使用。
 
+### Node.js 使用
 
-安装成功后主机可以直接执行 JS 代码：
+安装 Node.js 成功后，通过控制台命令可以执行 JS 脚本：
 
-1. 在控制台输入 `node` 并回车，进入 Node.js 运行环境：直接输入 JS 代码执行。
-2. 在控制台输入 `node JS文件名` 并回车，执行该 JS 文件。
+```bash
+node --version             # 查看 Node.js 版本
+
+node                       # 进入 Node.js 运行环境，可以直接输入 JS 代码并执行
+node example.js            # 执行指定的 JS 文件
+```
+
+---
+
+## Node.js 模块
 
 ### 模块化开发
 
 根据主流的模块化规范 ES6 定义：一个 JS 文件就是一个模块。
 
-- CommonJS 规范：module.exports 导出接口，require 引入模块（输出是值的拷贝）
-- ES6 标准：export 导出接口，import 引入模块（输出是值的引用）
-
-<font size=2 color=brown>由于引擎尚不支持，我们在 node.js 中习惯使用 CommonJS 语法。
-在 vue 中习惯使用 ES6 语法，但必须安装 babel 插件自动转码为 commonJS 语法执行。</font>
+模块之间必须通过规范的接口相互调用，目前最常使用的是 CommonJS 规范和 ES6 标准。
 
 **CommonJS 规范**
+
+1. module.exports 导出接口，require 引入模块。
+2. 输出是值的拷贝。
+
+*由于引擎尚不支持，我们在 node.js 中习惯使用 CommonJS 语法。*
 
 ```js
   var num = 1
@@ -42,6 +57,11 @@ Node.js 是一个 JavaScript 运行环境，运行在服务端（后端）。用
 ```
 
 **ES6 语法**
+
+1. export 导出接口，import 引入模块。
+2. 输出是值的引用。
+
+*我们在 vue 中通常使用 ES6 语法，但必须安装 babel 插件自动转码为 commonJS 语法执行。*
 
 ```js
   var num = 1
@@ -157,48 +177,91 @@ server.listen(8080, function(){               // 启动服务器，监听端口
 })
 ```
 
-###  Node.js 第三方模块
+---
 
-Node.js 通过 **包管理工具(npm)** 管理 Node.js 模块：
+## Node.js 项目
 
-控制台输入`npm init -y` ：将当前目录初始化为项目【生成 package.json 配置文件】
+### 包管理工具 npm
 
-控制台输入 `npm install 模块名` 下载安装第三方模块
-控制台输入 `npm uninstall 模块名` 卸载第三方模块
+用于 Node.js 项目的开发和管理，包括安装和卸载第三方模块。是非常强大和常用的 Node.js 工具。
 
-- `-g` 全局安装，允许所有项目调用（默认本地安装）
+下载安装 Node.js 程序后，即可在控制台使用 npm 命令。
 
-- `--save` （默认）记录为生产用模块【保存到 package.json - dependencies】 
-- `--save-dev` 记录为开发专用模块【保存到 package.json - devdependencies】
+```bash
+npm init -y                       # 将当前目录初始化为项目，即生成 package.json 配置文件。
+```
 
-在开发环境，控制台输入 `npm install` 安装该项目记录的所有模块
-在生产环境，控制台输入 `npm install --production` 安装该项目记录的生产用模块
+*package.json 配置文件负责管理 Node.js 项目。*
 
-**express 框架**
+```bash
+npm install vue/cli               # 安装指定的 Node.js 模块
+npm uninstall vue/cli             # 卸载指定的 Node.js 模块
 
-<font size =2 >在项目目录下，控制台输入 `npm install express` 安装 express 框架，进行 Node.js 项目开发。</font>
+npm install                       # 安装该项目 package.json 记录的所有模块
+```
 
+- **全局安装**
 
-### 基于 Node.js 的 web 服务项目结构
+npm 下载模块时默认安装在本地，只允许当前目录的项目调用。我们可以对模块进行全局安装，允许所有项目调用。
 
-- **node_module 文件夹**  / 本地下载的第三方模块
-- **public 文件夹** / 静态资源(css、js、img)
-- **view 文件夹** / 视图文件(view)
-- **app.js** / 入口模块，调用 http 模块创建服务器
-- **router.js** / （可选）分发模块，把任务分发给不同的业务处理单元
+```bash
+npm install vue/cli -g            # 全局安装 Node.js 模块
+npm uninstall vue/cli -g          # 全局卸载 Node.js 模块
+```
 
-在项目目录下，控制台输入 `node app.js` 即可运行服务器
+- **开发环境**
 
-此外还含有配置文件，如 package.json
- 
- ```json
-"script":{
-  "echo": "echo welcome",
-  "test": "node ./mine_test.js"
+npm 下载模块时默认为通用模块，可以在全部开发环境下使用。但我们在开发时可能需要引入部分模块，完成后不在生产环境引用。
+
+在项目的 package.json 配置文件中，调用的通用模块会记录在 dependencies 参数中，而开发用模块会记录在 devdependencies 参数中。
+
+```bash
+npm install vue/cli --save-dev           # 安装指定的 Node.js 模块，并标记为开发专用
+
+npm install --production                 # 安装该项目 package.json 记录的通用模块，但不安装开发用模块
+```
+
+### 配置文件 package
+
+package.json 配置文件负责记录 Node.js 项目信息。
+
+```json
+{
+  // 项目名称
+  "name": "example", 
+  // 项目版本
+  "version": "1.0.0",
+  // 项目描述 
+  "description": "我的 Node 项目",
+  // 入口文件
+  "main": "app.js",
+  // 引入模块
+  "dependencies": {
+    "koa": "^2.0.0",
+    "koa-router": "^7.4.0",
+    "mysql": "^2.17.1"
+  },
+  "devDependencies": {},
+  // 快捷命令
+  "scripts": {
+    "error": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"          
+  },
+  // 作者和凭证
+  "author": "MrJoker",
+  "license": "ISC"
 }
- ```
+```
 
-- script：用户自定义命令。控制台输入 `npm run test` 即可执行
+1. **入口文件**
+
+尝试启动项目时，系统会自动调用根目录下的入口文件执行。默认为 app.js 文件，在项目目录下控制台输入 `node app.js` 即可运行服务器。
+
+2. **快捷命令**
+ 
+将 JS 脚本封装为 npm 命令，在项目目录下控制台输入 `npm run start` 即可运行服务器。
+
+
 
 ### webpack 打包工具
 
