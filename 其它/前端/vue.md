@@ -1,8 +1,10 @@
 # vue
 
-## 前端框架
+---
 
-### 什么是前端框架
+## vue 概念
+
+### 前端框架
 
 前端开发进化过程： **原生JS 》jQuery 等类库 》Vue 等前端框架**
 
@@ -11,14 +13,16 @@
 
 目前主流的前端框架有 Vue 、 React 、 Angular 。
 
-### 为什么要使用 vue
+### vue 特征
 
 Vue 主要有以下两大特征：
+
 1. 响应式数据绑定：数据发生改变，视图自动更新（开发者不再关注 dom 操作，进一步提高开发效率）
+   
 2. 可组合视图组件：视图按照功能切分成基本单元（易维护，易重用，易测试）
 
 
-### 使用 vue 前端框架
+### vue 使用
 
 - **引入外部文件(CDN)**
 
@@ -32,316 +36,222 @@ Vue 主要有以下两大特征：
 
 - **命令行工具(CLI)**
 
-vue-cli 是基于 Node.js 的 vue 快捷开发工具（必须首先安装 Node.js）。
+vue-cli 是基于 Node.js 的 vue 快捷开发工具，使用前首先要下载并安装 Node.js 开发环境。
 
-控制台输入 `npm install @vue/cli -g` 全局安装
+```bash
+$ npm install @vue/cli -g          # 全局安装安装 vue-cli 工具
 
-1. `vue create project-name` 直接创建项目
-
-2. `vue ui` 开启图形化工具（强烈推荐，可以创建和管理项目）
-
-### vue 项目结构
-
-vue 项目由上述两种方式自动创建，其项目结构如下：
-
-- **node_module 文件夹**  / 依赖包目录
-
-- **public 文件夹** /  静态资源，外部可直接访问
-
-  - **index.html** / 输出界面
-  - **favicon.ico** / 图标
-
-- **src 文件夹** / 组件等资源，由静态资源加载
-
-  - **asserts 文件夹** / css、img 文件
-  - **components 文件夹** / vue 文件
-
-- **plugins 文件夹** / 插件文件
-
-- **router 文件夹** / 路由文件
-
-- **App.vue** / 核心组件
-
-- **main.js** / 入口文件
-
-还有一些其他配置文件，比如项目配置文件 package.json。
-用户可以创建 vue.config.js 对 vue 进行自定义配置，默认覆盖原配置。
-
-### vue 常用插件
-
-
-### 组件库
-
-不用自己画组件，可以使网站快速成型。推荐直接在 图形化工具内导入
-
-官网：https://element.eleme.cn/#/zh-CN/component/installation
-
-导入element-ui等桌面组件库，bootstrap 等移动端组件库
-
-安装依赖包 npm install element-ui -S
-
-导入资源即可
-
-import ElementUI from 'element-ui'; 
-import 'element-ui/lib/theme-chalk/index.css'// 样式
-
-Vue.use(ElementUI);
+$ vue create project-name          # 直接创建项目
+$ vue ui                           # 开启图形化工具，用来创建和管理项目
+```
 
 ---
 
-## vue 组件
+## vue 对象
 
-vue 前端框架的基本功能单元是组件，vue 对象本身也是一个组件（根组件）。
+vue 对象是管理 vue 的基本单元，开发者可以在 JS 代码中创建 vue 对象。
 
-### vue 单文件组件(.vue)
+在 vue 对象中，必须通过 `el` 指定 vue 对象作用域。
 
 ```vue
-<template>
-  模板内容 html
-</template>
-
 <script>
-  业务逻辑 export
-</script>
-
-<style>
-  组件样式 css
-</style>
-```
-
-### 全局组件
-
-```js
-Vue.component("greet-bar",{  //也可以使用驼峰式命名 greetBar
-  template:'
-    <div>
-      <p>大家好，我是{{name}}</p>
-      <button value="改名" v-on:click="changeName"></button>
-    </div>
-  ',
-  data:function(){
-    return {name:"王东浩"}
-  },
-  methods:{
-    changeName:function(){
-      this.name="甘甜"
-    }
-  }
-})
-```
-Vue.component 声明全局组件
-- template : 组件模板。只能含有一个根元素。
-- data : 模板中调用数据。必须以函数的形式返回。
-- methods : 组件中调用方法。
-
-组件必须在声明的 vue 对象中使用，即被根组件调用：
-
-```html
-<div id="app">  
-  <greet-bar></greet-bar>
-  <greet-bar></greet-bar>
-</div>
-
-<script>
-  new Vue({
-    el:"#app",
-    data:{}
-  });
-</script>
-```
-
-<font size=2 color=red>html 文件元素名和属性名不区分大小写，因此不可采用驼峰形式：但在 vue 组件中也可以作为驼峰形式识别。</font>
-
-### 局部组件
-
-```js
-var componentA = {
-  data:function(){
-    return {name:"王东浩"}
-  ,
-  template:'<p>hello {{name}}</p>'
-};
-
-var componentB = {
-  data:function(){
-    return {name:"陈伯言"}
-  ,
-  template:'<p>hello {{name}}</p>'
-};
-```
-
-局部组件只能在局部，即指定的 vue 对象中使用：
-
-```html
-<div id="app">  
-  <greet-a></greet-a>  
-  <greet-b></greet-b>
-</div>
-
-<script>
-  new Vue({
-    el:"#app",
-    data:{},
-    components:{
-      'greet-a': componentA,
-      'greet-b': componentB
-    }
-  });
-</script>
-```
-### 组件间数据交互
-
-**父组件向子组件传值**，在父组件中定义数据
-
-```html
-<div id="app">  
-  <greet-bar :first-name='sname' last-name = '赵四'></greet-bar>
-</div>
-
-<script>
-  new Vue({
-    el:"#app",
-    data:{sname:"尼古拉斯"}
-  });
-</script>
-```
-
-可以被子组件所读取并显示
-
-```js
-Vue.component("greet-bar",{
-  props::['first-name', 'last-name'],  //也可以使用驼峰式接收 firstName
-  template:'
-    <div>
-      <p>大家好，我是{{first-name + "·" + last-name}}</p>
-    </div>
-  '
-})
-```
-
-props 是单向数据流，只能用于父组件向子组件传值。
-
-**子组件向父组件传值**，子组件绑定自定义事件
-
-在template中 `<button @click='$emit("change-word", 0.1)'>点击</button>`
-
-第一个属性为事件标记，第二个属性为传递数值。
-
-父组件中监听事件并触发方法 `<menu-item @change-word='handle($event)'> </menu-item>`
-
-$event 为传递数值，名字不可更改。
-
-**非父子组件传值**，必须创建一个 vue 对象作为事件中心居中协调，监听两个子组件事件并通过props传递给另一个子组件。
-
-
-### 组件插槽
-
-在组件的template中添加`<slot>默认内容可选</slot>`
-
-可以自动读取`<greet-bar>内容</greet-bar>`中的内容并展示。
-
-
----
-
-### 创建 vue 对象
-
-在 JS 代码中创建 vue 对象：
-
-- el：元素ID（作用域）
-- data：数据
-- methods：方法（使用数据发生变化，重新执行方法刷新页面）
-- computed: 计算属性（使用数据发生变化，页面不会更新）
-- created: 创建时调用方法
-- components: 组件
-- watch: 监听器（检测到相应数据变化后执行，常用于处理异步操作）
-- filter: 过滤器（对显示数据进行过滤和修改）
-
-```html
-  <script>
     var app = new Vue({
       el: '#app',
-      data: {
-        name:'Vue',
-        message: 'Hello Vue'
-      },
-      methods:{
-        show:function(){
-            alert(message)
-            console.log(message)
-            //也可以 return
-        }
-      },
-      watch:{
-        name:function(val){
-          this.message = 'Hello ' + val;
-        }
-      }，
-      filter:{
-        upper:function(val){
-          return val.charAt(0).toUpperCase() + val.slice(1)
-        }
-      }
+      ...
     });
-    app.message="GoodBye Vue."; // vue 对象数据可以被 JS 代码更新
-  </script>
+</script>
 ```
 
 ### 数据显示
 
-`<p>{{ message }}</p>`
+在 vue 对象中，通过 `data` 存储 vue 对象中的数据。
 
-- 插值表达式：vue-data 中读取元素内容。
+```html
+<!-- 数据显示 -->
+<p v-text="message"></p>              <!-- v-text -->
+<p>Word is {{ message }}</p>          <!-- 插值表达式：可以对内容进行扩展 --> 
+<p v-html="message"></p>              <!-- v-html: 可以直接插入 html 元素 -->  
 
-`<p v-text="message"></p> `
+<!-- vue 对象 -->
+<script>
+    var app = new Vue({
+      el: '#app',
+      // 数据
+      data: {
+        message: 'Hello Vue',         // 数据
+        data: []                      // 数组数据
+      },
+    });
+    app.message="GoodBye Vue.";       // vue 对象数据可以被 JS 代码更新
+</script>
+```
 
-- v-text: vue-data 中读取元素内容。
+### 方法调用
 
-`<p v-html="message"></p> `
+在 vue 对象中，通过 `methods` 定义 vue 对象中的方法。
 
-- v-html: vue-data 中读取元素内容。数据中<>不会被转义。
+```html
+<!-- 方法调用 -->
+<button @click="quit"></button>       
+<button @click="showLog('Hello')"></button>        
+
+<!-- vue 对象 -->
+<script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        message: ''
+      },
+      // 方法
+      methods: {
+        quit () {
+          this.router.go(-1)
+        },
+        showLog (message) {
+          this.message = message
+          console.log(message)
+        }
+      });
+</script>
+```
+
+- 在 vue 对象中，通过 `computed` 定义计算属性，重复调用时会基于缓存直接返回之前的计算结果，提高效率。
+- 在 vue 对象中，通过 `created` 定义方法，会在创建 vue 对象时自动调用。
+
+```html
+<!-- 计算结果 -->    
+<p>Word is {{ calc(50) }}</p>     
+
+<!-- vue 对象 -->
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+      num: ''
+    },
+    // 创建方法
+    created () {
+      this.num = 100
+    },
+    // 计算属性
+    computed: {
+      calc (data) {
+        return this.num + data
+      }
+    }
+  });
+</script>
+```
 
 
-### 数据过滤
+### 数据监听
 
-过滤器的使用，有以下两种方式
-
-1. `<div>{{message | upper}}</div>`
-2. `<div v-bind:id="id | upper"></div>`
-
-过滤器还可以传递参数：`<div v-bind:id="id | upper(2,'hello')"></div>`
-
+在 vue 对象中，通过监听器 `watch` 可以在数据发生变化时触发指定的事件。
 
 
 ```html
-<!--定义全局过滤器并接收参数-->
-  <script>
-    Vue.filter('upper', function(val,arg1,arg2){
-      console.log(arg2);
-      return val.charAt(arg1).toUpperCase() + val.slice(arg1 + 1);
-    })
-  </script>
+<input type="text" v-model="name"></p>
+
+<!-- vue 对象 -->
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+      name: 'MrJoker',
+      num: {
+        a: 1,
+        b: 2,
+        c: 3
+      }
+    },
+    // 监听器
+    watch: {
+      // 监听一
+      name (newName, oldName) {
+        console.log(oldName + '>>' + newName)
+      },
+      // 监听二
+      num: {
+        handler(newNum, oldNum) {
+          console.log('num changed');
+        },
+        immediate: true,                      // 创建数据时也会立即执行
+        deep: true                            // 深度监听下属所有数据
+      },
+      // 监听三
+      'num.a': {      
+        handler(newName, oldName) {
+          console.log('obj.a changed');
+        }
+      }
+    } 
+  })
+</script>
 ```
+
+### 数据过滤
+
+在 vue 对象中，通过过滤器 `filter` 可以对要显示的数据进行修饰。
+
+```html
+<!-- 使用过滤器 -->
+<div>{{message | upper}}</div>                            <!-- 方式一 -->
+<div v-bind:id="id | upper"></div>                        <!-- 方式二 -->
+<div v-bind:id="id | upper2(2,'hello')"></div>            <!-- 使用过滤器并传递参数 -->
+
+<!-- vue 对象 -->
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+      name:'Vue',
+      message: 'Hello Vue',
+      data: []
+    },
+    // 过滤器
+    filter:{
+      upper: function(val){
+        return val.charAt(0).toUpperCase() + val.slice(1)
+      }
+    }
+  });
+</script>
+
+<!-- 全局过滤器 -->
+<script>
+  Vue.filter('upper2', function(val,arg1,arg2){
+    console.log(arg2);
+    return val.charAt(arg1).toUpperCase() + val.slice(arg1 + 1);
+  })
+</script>
+```
+
+---
+
+## vue 基础
 
 ### 指令绑定
 
-`<input type=button value="按钮" v-bind:title="message" v-on:click="show">`
+- vue 使用 `v-bind` 绑定属性，表示该属性内容从 vue-data 中加载。可以用 `:` 代替。
+- vue 使用 `v-on` 绑定事件，表示该事件从 vue-methods 中加载。可以用 `@` 代替。
 
-- v-bind: 绑定属性，表示该属性内容从 vue-data 中加载。可以用 : 代替。
-- v-on: 绑定事件，表示该事件从 vue-methods 中加载。可以用 @ 代替。
+```html
+<input type=button value="按钮" v-bind:title="message" v-on:click="show">
 
-`<img class="box" src="{{url}}" >`
+<!-- img 标签的 src 属性使用插值表达式绑定 -->
+<img class="box" src="{{url}}" >
 
-- 插值表达式绑定：给img标签的src属性赋值
+<!-- 判断是否使用 textColor 和 textSize 类 -->
+<div class="box" :class="{'textColor':isColor, 'textSize':isSize}">
+```
 
-<font size=2 color=red>JS 默认属性均为字符串，但 vue 绑定属性能自动识别数据为数值、布尔型、数组或对象。</font>
-
-`<div class="box" :class="{'textColor':isColor, 'textSize':isSize}">` 
-
-【示例】绑定boolean属性：判断是否使用textColor和textSize类
+*JS 默认属性均为字符串，但 vue 绑定属性能自动识别数据为数值、布尔型、数组或对象。*
 
 
 
 **可绑定事件**
+
+@click
 
 **事件修饰符**
 
@@ -357,9 +267,11 @@ $event 为传递数值，名字不可更改。
 
 Vue 使用单向绑定机制：后台数据发生改变后，页面显示会自动同步；但如果页面中表单输入发生变化，后台数据不会发生更新。
 
-`<input v-model="age" type="number">`
+vue 使用 `v-model` 实现双向绑定。运用于表单输入元素，输入发生变化后台数据也会实时更新。
 
-- v-model: 运用于表单输入元素，实现双向绑定。输入发生变化后台数据也会实时更新。
+```html
+<input v-model="age" type="number">
+```
 
 **表单域修饰符**
 
@@ -454,27 +366,212 @@ Vue 使用单向绑定机制：后台数据发生改变后，页面显示会自�
 
 ---
 
+## vue 组件
+
+vue 前端框架的基本功能单元是组件，vue 对象本身也是一个组件（根组件）。
+
+### 全局组件
+
+```js
+Vue.component("greet-bar",{  
+  template:'
+    <div>
+      <p>大家好，我是{{name}}</p>
+      <button value="改名" v-on:click="changeName"></button>
+    </div>
+  ',
+  data:function(){
+    return {name:"王东浩"}
+  },
+  methods:{
+    changeName:function(){
+      this.name="甘甜"
+    }
+  }
+})
+```
+
+Vue.component 声明全局组件
+- template : 组件模板。只能含有一个根元素。
+- data : 模板中调用数据。必须以函数的形式返回。
+- methods : 组件中调用方法。
+
+组件必须在声明的 vue 对象中使用，即被根组件调用：
+
+```html
+<div id="app">  
+  <greet-bar></greet-bar>
+  <greet-bar></greet-bar>
+</div>
+
+<script>
+  new Vue({
+    el:"#app",
+    data:{}
+  });
+</script>
+```
+
+*html 文件元素名和属性名不区分大小写，因此不可采用驼峰形式：但在 vue 组件中也可以作为驼峰形式识别。*
+
+### 局部组件
+
+```js
+var componentA = {
+  data:function(){
+    return {name:"王东浩"}
+  ,
+  template:'<p>hello {{name}}</p>'
+};
+
+var componentB = {
+  data:function(){
+    return {name:"陈伯言"}
+  ,
+  template:'<p>hello {{name}}</p>'
+};
+```
+
+局部组件只能在局部，即指定的 vue 对象中使用：
+
+```html
+<div id="app">  
+  <greet-a></greet-a>  
+  <greet-b></greet-b>
+</div>
+
+<script>
+  new Vue({
+    el:"#app",
+    data:{},
+    components:{
+      'greet-a': componentA,
+      'greet-b': componentB
+    }
+  });
+</script>
+```
+
+### vue 单文件组件(.vue)
+
+在实际项目开发中，我们往往为每一个组件创建一个单独的文件来定义。之间相互调用统一交由 router 管理。
+
+```vue
+<template>
+  模板内容 html
+</template>
+
+<script>
+  业务逻辑 export
+</script>
+
+<style>
+  组件样式 css
+</style>
+```
+
+## 组件交互
+
+### 父组件向子组件传值
+
+在父组件中定义数据
+
+```html
+<div id="app">  
+  <greet-bar :first-name='sname' last-name = '赵四'></greet-bar>
+</div>
+
+<script>
+  new Vue({
+    el:"#app",
+    data:{sname:"尼古拉斯"}
+  });
+</script>
+```
+
+可以被子组件所读取并显示
+
+```js
+Vue.component("greet-bar",{
+  props::['first-name', 'last-name'],  //也可以使用驼峰式接收 firstName
+  template:'
+    <div>
+      <p>大家好，我是{{first-name + "·" + last-name}}</p>
+    </div>
+  '
+})
+```
+
+props 是单向数据流，只能用于父组件向子组件传值。
+
+### 子组件向父组件传值
+
+- **子组件定义事件**
+
+子组件通过触发 `$emit` 事件向父组件传值。
+
+```html
+<!-- $emit 须设定事件标记和传递数值 -->
+<button @click='$emit("son-data", 0.1)'>点击</button>
+```
+
+- **父组件监听事件**
+
+父组件文件中放置的子组件，可以根据事件标记监听事件并调用指定的方法处理。
+
+```html
+<!-- $event 为传递数值 -->
+<router-view @son-data='handle($event)'> </router-view>
+<!-- 可不含，等同于 -->
+<router-view @son-data='handle'> </router-view>
+```
+
+父组件通过调用的方法，保存或使用子组件传来的值。
+
+```js
+handle(data){
+  this.sonData = data
+}
+```
+
+### 非父子组件传值
+
+必须创建一个 vue 对象作为事件中心居中协调，监听两个子组件事件并通过props传递给另一个子组件。
+
+
+### 组件插槽
+
+在组件的template中添加`<slot>默认内容可选</slot>`
+
+可以自动读取`<greet-bar>内容</greet-bar>`中的内容并展示。
+
 
 ---
 
 ## vue 前后端交互
 
-传统的原生 JS 开发和 jQuery 都使用 ajax 实现前后端交互：仍需要处理 dom 操作。
+传统的原生 JS 开发和 jQuery 都使用 ajax 实现前后端交互，存在以下两个问题：
 
-```
+1. 仍需要处理 dom 操作，操作复杂。
+2. 交互为同步操作，可能导致一致性问题。
+
+```js
 $.ajax({
   url:'http://localhost:8080',
   success:function:(data){
     ret = data;
-    console.log(ret); // 打印读取数据
+    console.log(ret);             // 打印更新后的数据
   }
 })
-console.log(ret); // 由于异步操作，此时打印数据尚未更新
+console.log(ret);                 // 打印数据，由于同步操作可能数据尚未更新
 ```
 
 ### promise 对象
 
 在 JavaScript 最新版本标准 ES6 中， 定义了 promise 对象获取异步操作的消息。
+
+- resolve 函数： 将 promise 对象的状态标记为成功
+- reject 函数：将 promise 对象的状态标记为失败
 
 ```js
 function queryData(url){
@@ -497,9 +594,6 @@ function queryData(url){
   return p;
 }
 ```
-
-- resolve 函数： 将 promise 对象的状态标记为成功
-- reject 函数：将 promise 对象的状态标记为失败
 
 **发送请求并获取处理结果**
 
@@ -553,6 +647,11 @@ Promise.race([p1,p2,p3]).then(
 
 axios 是基于 promise 实现的 http 客户端。作为第三方库，比官方的 fetch 功能更为强大。
 
+#### 引入 axios
+
+1. 直接引入
+2. 在 vue ui 图形化工具中引入
+
 ```html
 <!--引入 axios -->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -561,15 +660,20 @@ axios 是基于 promise 实现的 http 客户端。作为第三方库，比官�
 <script src="https://cdn.bootcss.com/qs/6.7.0/qs.min.js"></script>
 ```
 
-**全局配置**
+
+#### 全局配置
+
+一般在 main.js 文件中设定，可作用于全局。
 
 ```js
-axios.defaults.timeout = 3000; // 超时时间
-axios.defaults.baseURL = "http://localhost:8080" // 默认地址
-axios.defaults.headers['mytoken'] = 'asaffdf123' // 请求头
+axios.defaults.timeout = 3000;                       // 超时时间
+axios.defaults.baseURL = "http://localhost:8080"     // 默认地址
+axios.defaults.headers['mytoken'] = 'asaffdf123'     // 请求头
 ```
 
-**GET / DELETE 请求**
+#### 请求响应
+
+1. **GET / DELETE 请求**：输入 URL 和 params 参数，参数附着在 URL 上。
 
 ```js
 axios.get('/get',{
@@ -578,11 +682,11 @@ axios.get('/get',{
   }
 })
 .then(function(ret){
-  console.log(ret.data)
+  console.log(ret.data.message)
 }
 ```
 
-**POST / PUT 请求**（参数以 json 形式传递）
+2. **POST / PUT 请求**：输入 URL 和表单数据，数据以 json 形式传递。
 
 ```js
 axios.post('/post',{
@@ -590,36 +694,50 @@ axios.post('/post',{
   password:123456
 })
 .then(ret=>{
-  console.log(ret.data)
+  console.log(ret.data.message)
 }
 ```
 
-对于响应结果 ret: 
-- ret.data : 响应返回数据 【ret.data.item 返回数据中某一具体属性】
+**对于返回响应结果 ret** 
+
+- ret.data : 响应返回数据，可读取返回数据中某一具体属性。
 - ret.headers : 响应头信息
 - ret.status : 响应状态码
 - ret.statusText : 响应状态信息
 
-使用 asyns/await 将 axios 异步请求同步化
+#### 异步请求
 
+使用 async/await 可以将 axios 同步请求异步化，async 函数会等待 await 返回数据后再向下执行。
+
+通常放在 try 语句中，如果超时未获得数据则直接进入异常处理。
 
 ```js
-async getHistoryData (data) {
+    async getHistoryData (data) {
       try {
         let res = await axios.get('/api/survey/list/', {
           params: data
         })
         this.tableData = res.data.result
-        this.totalData = res.data.count
       } catch (err) {
         console.log(err)
-        alert('请求出错！')
       }
     }
 ```
 
 
-表单自带校验方法 validate(callback){ 直接返回 Promise 对象}，默认 valid 为 true 通过。一旦错误直接
+表单提交自带校验方法 validate(callback){ 直接返回 Promise 对象}，默认 valid 为 true 通过。一旦错误直接
+
+```js
+// 对于 ID 为 addFormRef 的表单
+this.$refs.addFormRef.validate(async valid => {
+        if (!valid) return
+        const { data: res } = await this.$http.post('adddevice', this.addForm)
+        console.log(res)
+        if (res.code !== 200) return this.$message.error(res.message)
+        this.$message.success(res.message)
+        this.$router.go(-1)
+      })
+```
 
 
 **拦截器**
@@ -841,6 +959,56 @@ this.$router.replace('/')
 
 
 ---
+
+
+
+### vue 项目结构
+
+vue 项目由上述两种方式自动创建，其项目结构如下：
+
+- **node_module 文件夹**  / 依赖包目录
+
+- **public 文件夹** /  静态资源，外部可直接访问
+
+  - **index.html** / 输出界面
+  - **favicon.ico** / 图标
+
+- **src 文件夹** / 组件等资源，由静态资源加载
+
+  - **asserts 文件夹** / css、img 文件
+  - **components 文件夹** / vue 文件
+
+- **plugins 文件夹** / 插件文件
+
+- **router 文件夹** / 路由文件
+
+- **App.vue** / 核心组件
+
+- **main.js** / 入口文件
+
+还有一些其他配置文件，比如项目配置文件 package.json。
+用户可以创建 vue.config.js 对 vue 进行自定义配置，默认覆盖原配置。
+
+### vue 常用插件
+
+
+### 组件库
+
+不用自己画组件，可以使网站快速成型。推荐直接在 图形化工具内导入
+
+官网：https://element.eleme.cn/#/zh-CN/component/installation
+
+导入element-ui等桌面组件库，bootstrap 等移动端组件库
+
+安装依赖包 npm install element-ui -S
+
+导入资源即可
+
+import ElementUI from 'element-ui'; 
+import 'element-ui/lib/theme-chalk/index.css'// 样式
+
+Vue.use(ElementUI);
+
 
 ### Element UI 组件库
 

@@ -79,6 +79,8 @@ Java 程序在虚拟机上运行而不是直接在操作系统上运行，从软
 1. 通过这种层级关系可以避免类的重复加载。
 2. 其次可以防止核心 API 库被随意篡改，用户即使编写了 java.lang.Object 的同名类，也永远无法被加载运行。
 
+【在双亲委派模型中，由父加载类加载的类，下层加载器是不能加载的。用户在 classpath 路径下自定义的java.*包内的类会抛出异常：SecurityException: Prohibited package name】
+
 
 ### 链接
 
