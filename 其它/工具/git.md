@@ -3,7 +3,6 @@
 ---
 
 
----
 
 ## 基本概念
 
@@ -161,7 +160,7 @@ git stash list                             # 查看堆栈缓存
 
 在创建仓库的时候，会默认创建主分支 master。
 
-在开发新功能、修复紧急 bug 时，我们可以创建分支来进行操作，直到完成开发后再合并到主分支上。
+在开发功能、修复 BUG 时，我们通常都会创建分支来进行操作，直到完成开发后再合并到主分支上。
 
 ```bash
 git branch                                 # 列出本地分支
@@ -169,7 +168,11 @@ git branch -r                              # 列出远程分支
 
 git branch test                            # 创建 test 分支（但不切换）
 git checkout test                          # 切换到 test 分支
+git checkout -b test                       # 创建并切换到 test 分支
+
 git merge test                             # test 分支合并到主分支
+git merge origin/master                    # origin/master 合并到主分支   
+git rebase master                          # master 分支合并到当前分支
 ```
 
 当合并分支或者导入远程仓库分支时，常常会出现同一个文件被多个分支修改的情况。这个时候工作区文件会同时记录多个版本的代码，需要开发者通过编辑器解决冲突。
@@ -191,13 +194,13 @@ git reset f687a6de307a598d375bc1b6433dfe667c551f87 README.txt     # 对指定文
 本地仓库和远程仓库链接后，且本地 Git 绑定的 GitHub 账户具备对远程仓库的操作权限，用户就可以通过以下指令同步远程代码。
 
 ```bash
-git push -u origin master                                     # master 分支上传到远程仓库 origin
+git push -u origin master                                     # master 分支上传到远程仓库 origin（上传新分支会在远程仓库也创建新分支）
 git push -f origin master                                     # master 分支强制上传到远程仓库 origin（适用于版本回退后远程同步）
 
 git pull origin master                                        # 从远端仓库 origin 获取代码并自动合并到主分支
 git status                                                    # 导入后工作区更新，查看和之前版本的差异
 
-git fetch origin master                                       # 从远端仓库 origin 获取代码到 origin/master 分支
+git fetch origin master                                       # 从远端仓库 origin 获取 origin/master 分支
 git log -p master..origin/master                              # 查看分支差异
 git merge origin/master                                       # 合并分支
 ```
@@ -225,6 +228,6 @@ Github 等远程仓库支持多人对同一项目进行协同开发，主要有�
 
   3. 原仓库拥有者同意后，镜像仓库的修改会合并到原仓库中。
 
-
+> 在本地仓库同时链接两个远程仓库：origin 自己持有的镜像仓库 & upstream 原始仓库。本地仓库从 upstream 获取代码，更新后上传到 origin 并发送 Pull Request 请求。
 
 
