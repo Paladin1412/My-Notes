@@ -17,9 +17,9 @@
 
 Vue 主要有以下两大特征：
 
-1. 响应式数据绑定：数据发生改变，视图自动更新（开发者不再关注 dom 操作，进一步提高开发效率）
+1. 响应式数据绑定：数据发生改变，视图自动更新（开发者不再关注 dom 操作，进一步提高开发效率）。
    
-2. 可组合视图组件：视图按照功能切分成基本单元（易维护，易重用，易测试）
+2. 可组合视图组件：视图按照功能切分成基本单元（易维护，易重用，易测试）。
 
 
 ### vue 使用
@@ -38,10 +38,22 @@ Vue 主要有以下两大特征：
 
 vue-cli 是基于 Node.js 的 vue 快捷开发工具，使用前首先要下载并安装 Node.js 开发环境。
 
+1. 安装脚手架
+
 ```bash
 $ npm install @vue/cli -g          # 全局安装安装 vue-cli 工具
+```
 
+> `@vue/cli` 适用于 vue 2.X ，`vue-cli` 适用于旧版本。
+
+2. 创建项目并使用
+
+```bash
+# 方式一
 $ vue create project-name          # 直接创建项目
+$ npm run dev                      # 启动项目           
+
+# 方式二
 $ vue ui                           # 开启图形化工具，用来创建和管理项目
 ```
 
@@ -248,20 +260,19 @@ vue 对象是管理 vue 的基本单元，开发者可以在 JS 代码中创建 
 *JS 默认属性均为字符串，但 vue 绑定属性能自动识别数据为数值、布尔型、数组或对象。*
 
 
-
 **可绑定事件**
 
-@click
+`@click` 点击事件
 
 **事件修饰符**
 
 当父级元素和子级元素被同一个事件触发指令时，会先执行子级元素的指令，再执行父级元素的指令。
 
-- .prevent 阻止事件默认行为（比如超链接点击跳转，表单点击提交）。
-- .stop  阻止冒泡调用，不再执行父级的指令。
-- .capture 捕获调用，先执行父级的指令再执行子级的指令。
-- .self 该指令只有元素本身被点击才执行，不会被子级的指令冒泡调用。
-- .once 事件只触发一次，被触发后该指令无效。
+- `.prevent` 阻止事件默认行为（比如超链接点击跳转，表单点击提交）。
+- `.stop`  阻止冒泡调用，不再执行父级的指令。
+- `.capture` 捕获调用，先执行父级的指令再执行子级的指令。
+- `.self` 该指令只有元素本身被点击才执行，不会被子级的指令冒泡调用。
+- `.once` 事件只触发一次，被触发后该指令无效。
 
 ### 表单输入绑定
 
@@ -275,9 +286,9 @@ vue 使用 `v-model` 实现双向绑定。运用于表单输入元素，输入�
 
 **表单域修饰符**
 
-- number  转化为数值
-- trim  去掉首尾空格
-- lazy  鼠标离开输入元素后才更新（验证用户名是否已被使用时常用）
+- `number`  转化为数值
+- `trim`  去掉首尾空格
+- `lazy`  鼠标离开输入元素后才更新（验证用户名是否已被使用时常用）
 
 ### 条件渲染
 
@@ -372,6 +383,10 @@ vue 前端框架的基本功能单元是组件，vue 对象本身也是一个组
 
 ### 全局组件
 
+`Vue.component` 用于声明全局组件（不推荐）。
+
+在 vue 中， `template` 表示组件模板，即组件要展示的内容。**模板内只能含有一个根元素！**
+
 ```js
 Vue.component("greet-bar",{  
   template:'
@@ -391,12 +406,8 @@ Vue.component("greet-bar",{
 })
 ```
 
-Vue.component 声明全局组件
-- template : 组件模板。只能含有一个根元素。
-- data : 模板中调用数据。必须以函数的形式返回。
-- methods : 组件中调用方法。
+全局注册的组件可以直接用在任何的 Vue 根实例 (new Vue) 的模板中。
 
-组件必须在声明的 vue 对象中使用，即被根组件调用：
 
 ```html
 <div id="app">  
@@ -412,19 +423,21 @@ Vue.component 声明全局组件
 </script>
 ```
 
-*html 文件元素名和属性名不区分大小写，因此不可采用驼峰形式：但在 vue 组件中也可以作为驼峰形式识别。*
+> html 文件元素名和属性名不区分大小写，因此不可采用驼峰形式。但在 vue 组件中可以作为驼峰形式识别，全局组件命名为 GreetBar 也能被读取。
 
 ### 局部组件
 
+为避免用户需要一次性加载过多组件，我们可以定义局部组件，只在指定的 vue 对象中使用。
+
 ```js
-var componentA = {
+var greetA = {
   data:function(){
     return {name:"王东浩"}
   ,
   template:'<p>hello {{name}}</p>'
 };
 
-var componentB = {
+var greetB = {
   data:function(){
     return {name:"陈伯言"}
   ,
@@ -432,7 +445,7 @@ var componentB = {
 };
 ```
 
-局部组件只能在局部，即指定的 vue 对象中使用：
+在 vue 中声明要调用的组件，就可以在组件内完成调用。
 
 ```html
 <div id="app">  
@@ -445,16 +458,20 @@ var componentB = {
     el:"#app",
     data:{},
     components:{
-      'greet-a': componentA,
-      'greet-b': componentB
-    }
+      'GreetA': GreetA,
+      'GreetB': GreetB
+    },
+    // components: { GreetA, GreetB },  
   });
 </script>
 ```
 
+
+
+
 ### vue 单文件组件(.vue)
 
-在实际项目开发中，我们往往为每一个组件创建一个单独的文件来定义。之间相互调用统一交由 router 管理。
+在实际项目开发中，我们往往为每一个组件创建一个单独的文件来定义。之间的相互调用统一交由 router 管理。
 
 ```vue
 <template>
@@ -470,11 +487,15 @@ var componentB = {
 </style>
 ```
 
+---
+
 ## 组件交互
 
 ### 父组件向子组件传值
 
-在父组件中定义数据
+在 vue 中， `props` 是单向数据流，用于父组件向子组件传值。
+
+1. 在父组件中定义数据
 
 ```html
 <div id="app">  
@@ -489,7 +510,7 @@ var componentB = {
 </script>
 ```
 
-可以被子组件所读取并显示
+2. 子组件读取并显示
 
 ```js
 Vue.component("greet-bar",{
@@ -502,7 +523,6 @@ Vue.component("greet-bar",{
 })
 ```
 
-props 是单向数据流，只能用于父组件向子组件传值。
 
 ### 子组件向父组件传值
 
@@ -536,14 +556,14 @@ handle(data){
 
 ### 非父子组件传值
 
-必须创建一个 vue 对象作为事件中心居中协调，监听两个子组件事件并通过props传递给另一个子组件。
+必须创建一个 vue 对象作为事件中心居中协调，监听两个子组件事件并通过 props 传递给另一个子组件。
 
 
 ### 组件插槽
 
-在组件的template中添加`<slot>默认内容可选</slot>`
+在组件的 template 中添加 `<slot>默认内容可选</slot>`
 
-可以自动读取`<greet-bar>内容</greet-bar>`中的内容并展示。
+可以自动读取 `<greet-bar>内容</greet-bar>` 中的内容并展示。
 
 
 ---
@@ -570,8 +590,8 @@ console.log(ret);                 // 打印数据，由于同步操作可能数�
 
 在 JavaScript 最新版本标准 ES6 中， 定义了 promise 对象获取异步操作的消息。
 
-- resolve 函数： 将 promise 对象的状态标记为成功
-- reject 函数：将 promise 对象的状态标记为失败
+- resolve 函数： 将 promise 对象的状态标记为成功。
+- reject 函数：将 promise 对象的状态标记为失败。
 
 ```js
 function queryData(url){

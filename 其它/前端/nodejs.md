@@ -90,12 +90,12 @@ node example.js            # 执行指定的 JS 文件
 ```
 
 
-### 常用 Node.js 官方模块
+### 官方模块
 
 Node.js 提供了允许直接导入的官方模块，查询网址：http://nodejs.cn/api/
 
 
-- OS 模块：系统信息
+- **OS 模块**：系统信息
 
 ```js
 var os = require("os");
@@ -107,7 +107,7 @@ console.log('内存总量' + os.totalmem() + '字节');
 console.log('可用内存' + os.freemem() + '字节');
 ```
 
-- Path 模块：路径信息
+- **Path 模块**：路径信息
 
 ```js
 var path = require("path");
@@ -118,7 +118,7 @@ console.log(path.dirname(data));           // 输出 c:/myapp
 console.log(path.basename(dirname(data))); // 输出 myapp
 ```
 
-- URL 模块：URL 信息
+- **URL 模块**：URL 信息
 
 ```js
 var url = require("url");
@@ -129,7 +129,7 @@ var urlQuery = url.parse(data, true);
 console.log(urlQuery.query.name);         // 输出 王东浩
 ```
 
-- fs 模块：文件信息
+- **fs 模块**：文件信息
 
 ```js
 var fs = require("fs");
@@ -151,7 +151,7 @@ fs.readFile('./a.txt', 'utf8', function(err, data){
 })
 ```
 
-- http / https 模块：服务器
+- **http / https 模块**：服务器
 
 ```js
 var http = require("http");
@@ -183,15 +183,17 @@ server.listen(8080, function(){               // 启动服务器，监听端口
 
 ### 包管理工具 npm
 
-用于 Node.js 项目的开发和管理，包括安装和卸载第三方模块。是非常强大和常用的 Node.js 工具。
+用于 Node.js 项目的开发和管理，包括安装和卸载第三方模块。是非常强大和常用的 Node.js 工具。下载安装 Node.js 后，即可在控制台使用 npm 命令。
 
-下载安装 Node.js 程序后，即可在控制台使用 npm 命令。
+- **初始化项目**
 
 ```bash
 npm init -y                       # 将当前目录初始化为项目，即生成 package.json 配置文件。
 ```
 
-*package.json 配置文件负责管理 Node.js 项目。*
+> package.json 配置文件负责管理 Node.js 项目。
+
+- **模块安装**
 
 ```bash
 npm install vue/cli               # 安装指定的 Node.js 模块
@@ -200,7 +202,8 @@ npm uninstall vue/cli             # 卸载指定的 Node.js 模块
 npm install                       # 安装该项目 package.json 记录的所有模块
 ```
 
-- **全局安装**
+> node_modules 文件夹负责存储当前 Node.js 项目要使用的模块。
+
 
 npm 下载模块时默认安装在本地，只允许当前目录的项目调用。我们可以对模块进行全局安装，允许所有项目调用。
 
@@ -263,6 +266,6 @@ package.json 配置文件负责记录 Node.js 项目信息。
 
 
 
-### webpack 打包工具
+### 打包工具 webpack
 
 webpack 是基于 Node.js 的自动化构建工具，对整个项目要请求的静态资源进行合并、封装、压缩、和自动转换。大大加快了请求静态资源页面加载速度，也解决了代码的兼容性问题。
