@@ -104,7 +104,9 @@ git clone git@github.com:account/project.git                  # 拷贝项目到�
 git add README.md                          # 将指定文件放入暂存区
 git add .                                  # 将全部文件放入暂存区
 
-git diff                                   # 查看暂存区和工作区文件差异
+git diff                                   # 查看工作区更新（相对于暂存区）
+git diff master                            # 查看工作区更新（相对于 master 分支）
+git status                                 # 查看文件是否被暂存或提交
 ```
 
 在执行 add 操作时，开发者往往想要忽略一些特定的文件或目录。
@@ -142,6 +144,9 @@ commit 操作执行完毕后，暂存区数据会被清空。每次 commit 操�
 
 ```bash
 git commit -m "Your commit"                # 提交文件，放入 git 仓库保存
+
+git diff --staged                          # 查看暂存区更新（相对于提交版本）
+git status                                 # 查看文件是否被暂存或提交
 ```
 
 执行 commit 操作后（版本号 A）并尝试 push 到远程仓库，如果远程仓库已经被更新就会遭到拒绝。此时必须通过 pull 获取更新到本地然后合并（版本号 B）才能 push 代码，但是会提交两个版本更新。
@@ -158,12 +163,12 @@ git stash list                             # 查看堆栈缓存
 
 ### 管理分支 branch
 
-在创建仓库的时候，会默认创建主分支 master。
+在创建仓库的时候，会默认创建主分支 master。HEAD 则始终指向当前分支。
 
 在开发功能、修复 BUG 时，我们通常都会创建分支来进行操作，直到完成开发后再合并到主分支上。
 
 ```bash
-git branch                                 # 列出本地分支
+git branch                                 # 列出本地分支（HEAD 指向当前分支）
 git branch -r                              # 列出远程分支 
 
 git branch test                            # 创建 test 分支（但不切换）
