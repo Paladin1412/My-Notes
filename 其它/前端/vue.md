@@ -51,7 +51,8 @@ $ npm install @vue/cli -g          # 全局安装安装 vue-cli 工具
 ```bash
 # 方式一
 $ vue create project-name          # 直接创建项目
-$ npm run dev                      # 启动项目           
+$ npm run dev                      # 开发环境启动项目（可配置）        
+$ npm run build                    # 运行环境启动项目（可配置）     
 
 # 方式二
 $ vue ui                           # 开启图形化工具，用来创建和管理项目

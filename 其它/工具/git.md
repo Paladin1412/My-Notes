@@ -145,7 +145,7 @@ commit 操作执行完毕后，暂存区数据会被清空。每次 commit 操�
 ```bash
 git commit -m "Your commit"                # 提交文件，放入 git 仓库保存
 
-git diff --staged                          # 查看暂存区更新（相对于提交版本）
+git diff --staged                          # 查看当前分支暂存区更新（相对于提交版本）
 git status                                 # 查看文件是否被暂存或提交
 ```
 
