@@ -194,3 +194,81 @@ public class EatPlus {
     }
 }
 ```
+
+
+---
+
+## 常用 AOP
+
+### 异常处理
+
+- `@ControllerAdvice` / `@RestControllerAdvice`: 标注当前类为所有 Controller 类服务
+
+- `@ExceptionHandler`: 标注当前方法处理异常（默认处理 RuntimeException）
+  `@ExceptionHandler(value = Exception.class)`: 处理所有异常
+
+```java
+@RestControllerAdvice
+public class ControllerExceptionHandler {
+
+    @ExceptionHandler(Throwable.class)
+    public ResultBean handleOtherException(Throwable e) {
+        String message = String.format("错误=%s,位置=%s", e.toString(), e.getStackTrace()[0].toString());
+        return ResultBean.error(ErrorCode.UNKNOWN_ERROR.getErrorCode(), message);
+    }
+
+    @ExceptionHandler(StreamPlatformException.class)
+    public ResultBean handleVenusException(StreamPlatformException e) {
+        return ResultBean.error(e.getErrorCode(), e.getMessageToUser());
+    }
+
+    @ExceptionHandler(FormValidationException.class)
+    public ResultBean handleFormValidationException(FormValidationException e) {
+        StringBuilder message = new StringBuilder();
+        e.getResult().getAllErrors().forEach(objectError -> {
+            if (objectError instanceof FieldError) {
+                FieldError fieldError = (FieldError) objectError;
+                message.append("参数").append(fieldError.getField())
+                        .append("错误值为").append(fieldError.getRejectedValue())
+                        .append(fieldError.getDefaultMessage());
+            } else {
+                message.append(objectError.getDefaultMessage());
+            }
+        });
+        return ResultBean.error(ErrorCode.PARAMETER_VALIDATION_ERROR.getErrorCode(),
+                String.format(ErrorCode.PARAMETER_VALIDATION_ERROR.getMessage(), message));
+    }
+}
+```
+
+### 拦截器
+
+
+
+```java
+// 定义拦截器
+public class RestControllerInterceptor extends HandlerInterceptorAdapter {
+
+    // Session key
+    public final static String SESSION_KEY = "user";
+
+    // preHandle 预处理
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        HttpSession session = request.getSession();
+        if (session.getAttribute(SESSION_KEY) != null) return true;
+        // 跳转登录页面（重定向）
+        request.setAttribute("message","登录失败，请先输入用户名和密码。");
+        request.getRequestDispatcher("login").forward(request,response);
+        return false;
+    }
+
+    // postHandle 善后处理
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+                           ModelAndView modelAndView) {
+        System.out.println("INTERCEPTOR POSTHANDLE CALLED");
+    }
+
+}
+```

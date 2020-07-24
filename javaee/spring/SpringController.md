@@ -5,144 +5,10 @@ Spring Boot 内集成了 TomCat 服务器，通过控制层接收浏览器的 UR
 
 底层和浏览器的信息交互仍旧由 servlet 完成。
 
----
-
-## 异常处理类
-
-- `@ControllerAdvice`: 标注当前类为所有Controller类服务
-- `@ExceptionHandler`: 标注当前方法处理异常（默认处理 RuntimeException ）
-  `@ExceptionHandler(value = Exception.class)`: 处理所有异常
-- `@ResponseBody`:将Controller类返回数据(通常为map)转码添加到response中(默认为json形式)
-
+https://blog.csdn.net/a532672728/article/details/78057218 传递参数
 
 ---
 
-
-## Controller 配置
-
-开发者可以通过以下两种方式配置 Controller 层：
-
-1. 继承 WebMvcConfigurerAdapter 类（已过时）：使用默认配置，可重写以下方法。
-
-2. 实现 WebMvcConfigurer 接口 / 继承 WebMvcConfigurationSupport 类：丢弃默认设置，开发者对以下方法全部重写。
-
-
-```java
-/** 解决跨域问题 **/
-public void addCorsMappings(CorsRegistry registry) ;
-/** 添加拦截器 **/
-void addInterceptors(InterceptorRegistry registry);
-/** 配置视图解析器 **/
-void configureViewResolvers(ViewResolverRegistry registry);
-/** 配置内容裁决选项 **/
-void configureContentNegotiation(ContentNegotiationConfigurer configurer);
-/** 视图跳转控制器 **/
-void addViewControllers(ViewControllerRegistry registry);
-/** 静态资源处理 **/
-void addResourceHandlers(ResourceHandlerRegistry registry);
-/** 默认静态资源处理器 **/
-void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer);
-```
-
-
-### 跨域问题
-
-配置如何处理跨域请求，否则返回数据会被浏览器拦截。
-
-```java
-    public void addCorsMappings(CorsRegistry registry) {
-        //添加映射路径
-        registry.addMapping("/**")
-                //放行哪些原始域
-                .allowedOrigins("*")
-                //是否发送Cookie信息
-                .allowCredentials(true)
-                //放行哪些原始域(请求方式)
-                .allowedMethods("GET","POST", "PUT", "DELETE")
-                //放行哪些原始域(头部信息)
-                .allowedHeaders("*")
-                //暴露哪些头部信息（因为跨域访问默认不能获取全部头部信息）
-                .exposedHeaders("Header1", "Header2");
-    }
-```
-
-
-### 拦截器
-
-- **拦截器(Interceptor)**
-
-Java Web 中，在执行 Controller 方法前后对 Controller 请求进行拦截和处理。
-
-依赖于 web 框架，在Spring 配置。在实现上基于 Java 的反射机制。
-
-- **过滤器(Filter)**
-
-Java Web中，在 request/response 传入 Servlet 前，过滤信息或设置参数。
-
-依赖于 servlet 容器，在 web.xml 配置。在实现上基于函数回调。
-
-**两者常用于修改字符编码、删除无用参数、登录校验等。Spring 框架中优先使用拦截器：功能接近、使用更加灵活。**
-
-
-一个*：只匹配字符，不匹配路径（/）
-两个**：匹配字符，和路径（/）
-
-https://www.cnblogs.com/kangkaii/p/9023751.html
-
-
-```java
-@Configuration
-public class WebSecurityConfiguration extends WebMvcConfigurerAdapter {
-
-
-        //路径映射，已在Controller中配置
-        /*@Override
-        public void addViewControllers(ViewControllerRegistry registry) {
-            registry.addViewController("/").setViewName("login");
-            registry.addViewController("/index.html").setViewName("login");
-            registry.addViewController("/main.html").setViewName("success");
-            registry.addResourceHandler("/webjars/**") .addResourceLocations("classpath:/META-INF/resources/webjars/");
-        }*/
-
-
-        // Session key
-        public final static String SESSION_KEY = "user";
-
-        //装载拦截器
-        @Bean
-        public SecurityInterceptor getSecurityInterceptor() {
-            return new SecurityInterceptor();
-        }
-
-        // 配置拦截器
-        public void addInterceptors(InterceptorRegistry registry) {
-            InterceptorRegistration addInterceptor = registry.addInterceptor(getSecurityInterceptor());
-            // 排除配置
-            addInterceptor.excludePathPatterns("/error","/login","/user/login");
-            addInterceptor.excludePathPatterns("/asserts/**");
-            addInterceptor.excludePathPatterns("/webjars/**");
-            addInterceptor.excludePathPatterns("/public/**");
-            // 拦截配置
-            addInterceptor.addPathPatterns("/**");
-        }
-
-        // 定义拦截器
-        private class SecurityInterceptor extends HandlerInterceptorAdapter {
-            @Override
-            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-                    throws Exception {
-                HttpSession session = request.getSession();
-                if (session.getAttribute(SESSION_KEY) != null) return true;
-                // 跳转登录页面（重定向）
-                request.setAttribute("message","登录失败，请先输入用户名和密码。");
-                request.getRequestDispatcher("login").forward(request,response);
-                return false;
-            }
-        }
-    }
-```
-
----
 
 ## Controller 实现
 
@@ -152,11 +18,11 @@ Controller 类需要使用 `@RestController` 或 `@Controller` 注解标注。
 
 - `@RestController`：类中所有方法以 Map/List 等形式返回 JSON 数据。适用于前后端分离开发。
 
-*`@Controller` 类中标注 `@ResponseBody` 的方法，可以起到和 `@RestController` 类相同的效果。*
+P.S. `@Controller` 类中标注 `@ResponseBody` 的方法，可以起到和 `@RestController` 类相同的效果。
 
 ### 请求映射
 
-Controller 类中的方法使用 `@RequestMapping` 注解标注，就可以将指定 URL 请求映射到方法上处理。
+1. Controller 类中的方法使用 `@RequestMapping` 注解标注，就可以将指定 URL 请求映射到方法上处理。
 
 ```java
 @RequestMapping(value = "/hello", method = RequestMethod.GET)     // 参数为 URL 路径和请求方式
@@ -169,11 +35,10 @@ Controller 类中的方法使用 `@RequestMapping` 注解标注，就可以将�
 @RequestMapping("/?/hello")                                       // ? 匹配单字符
 @RequestMapping("/*/hello")`：                                    // * 匹配任意数量字符
 @RequestMapping("/**/hello")：                                    // ** 匹配任意数量目录
-
-@RequestMapping("/{ID}/hello")`                                   // {} 读取 URL 路径中的参数
+@RequestMapping("/{ID}/hello")`                                   // {} 自动读取 URL 路径动态参数
 ```
 
-Controller 类也可以通过 `@RequestMapping` 注解标注，表示路径下的 URL 请求在该类中寻找方法。
+2. Controller 类也可以通过 `@RequestMapping` 注解标注，表示路径下的 URL 请求在该类中寻找方法。
 
 ```java
 @Controller
@@ -185,9 +50,9 @@ public class SpeakController{
 ```
 
 
-### 参数接收
+### GET 请求参数
 
-对于请求 `/test?username=mrjoker&password=123456` ，Cotroller 方法有以下几种方式接收参数。
+GET 请求参数直接附着在 URL 中。对于请求 `/test?username=mrjoker&password=123456` ，Controller 方法有以下几种方式接收：
 
 1. 直接获取参数
 
@@ -241,174 +106,203 @@ public String test(@PathVariable("username") String s1, @PathVariable("password"
 6. 通过 ModelAttribute 注解来获取其他方法返回值作为参数
 
 
-https://blog.csdn.net/a532672728/article/details/78057218 传递参数
+### POST 请求参数
 
-### 请求参数
+POST 请求请求参数放置在请求体中，有以下两种格式：
 
-GET 请求请求参数直接附着在 URL 中。而 POST 请求请求参数放置在请求体中，其请求参数有以下两种格式：
-
-**Form Data 格式**
+- **Form Data 格式**
   
 请求的 Content-Type 为 application/x-www-form-urlencoded
 
 示例：`username=mrjoker&password=123456`
 
-**Request Payload 格式**
+- **Request Payload 格式**
   
 请求的 Content-Type 为 application/json 或者 multipart/form-data
 
 示例：`{"username":"mrjoker", "password":"123456"}`
 
 
-AJAX 提交 POST 请求默认使用 Form Data 格式，Spring MVC 会自动解析到对应的 bean 中并获取参数。但对于 Request Payload 请求，则必须进行处理：
-
-
-1. 前端解决方案 axios 库可以使用 qs 库将 json 对象转化为 Form Data 格式。
-2. 后端解决方案 Spring Boot 在请求参数上加 `@RequestBody` 注解，将请求正文解析到对应的 bean 中获取参数。
-
-一个请求可以有多个 RequestParam，但只能有一个 RequestBody。如果 URL 内含有参数，两者也可以同时使用。
-
-@RequestBody 可以直接以 String 接收前端传过来的 json 数据，也可以用对象自动解析前端传过来的 json 数据。对象里定义 List 属性，可用来接收多条 json 数据。
-
-axios 中的 params与 data 传参的区别: params 传参，参数以 k=v&k=v 格式放置在 url 中传递。data传参，参数会收到Request Header中的 Content-Type 类型的影响 data 的参数会在 form表单中。
-
-
-https://www.cnblogs.com/dw039/p/11104628.html
-
-
-### 局部跨域
-
-在方法上（@RequestMapping）或者在控制器（@Controller）上使用注解 @CrossOrigin，可以实现局部跨域.  
+1. AJAX 提交 POST 请求默认使用 Form Data 格式，Spring MVC 会自动解析到对应的 bean 中并获取参数。
 
 ```java
-    @RequestMapping("/hello")
-    @ResponseBody
-    @CrossOrigin("http://localhost:8080") 
-    public String index( ){
-        return "Hello World";
-    }
+// 逐个参数接收
+@RequestMapping(value="/test", method=RequestMethod.POST)
+private String test(@RequestParam("username") String username, @RequestParam("password") String password){
+    return username + password;
+}
+
+// 解析为整体接收
+@RequestMapping(value="/test", method=RequestMethod.POST)
+private String test(User user){
+    return user.getUsername() + user.getPassword();
+}
 ```
 
-使用 HttpServletResponse 对象添加响应头实现局部跨域。
+2. Vue 提交 POST 请求默认使用 Request Payload 格式，Spring MVC 接收时必须进行处理：
+
+    - 前端解决方案： axios 库可以使用 qs 库将 json 对象转化为 Form Data 格式。
+    - 后端解决方案： Spring Boot 在请求参数上加 `@RequestBody` 注解，将请求正文解析到对应的 bean 中获取参数。
+
+`@RequestBody` 可以直接以 String 接收前端传过来的 json 数据，也可以用对象自动解析前端传过来的 json 数据。对象里定义 List 属性，可用来接收多条 json 数据。
 
 ```java
-    @RequestMapping("/hello")
-    @ResponseBody
-    public String index(HttpServletResponse response){
-        response.addHeader("Access-Control-Allow-Origin", "http://localhost:8080");
-        // response.addHeader("Access-Control-Allow-Origin", "*");     全部放行
-        return "Hello World";
-    }
+// String 形式接收
+@RequestMapping(value = "/test", method = RequestMethod.POST)
+public String test(@RequestBody String user) {
+    JSONObject userJson = JSON.parseObject(user);
+    String username = userJson.getString("username");
+    String password = userJson.getString("password");
+    return username + password;
+}
+
+// 解析为对象接收
+@RequestMapping(value = "/test", method = RequestMethod.POST)
+public String updateClusterIdByClientAndQueue(@RequestBody User user) {
+    return user.getUsername() + user.getPassword();
+}
 ```
-  
+
+
+> 一个请求可以有多个 `@RequestParam`，但只能有一个 `@RequestBody`。 URL 内含有参数时，两者可以同时使用。
+
+
+### 请求转发和重定向
+
+1. **请求转发（forward）**
+
+    客户端（浏览器）向服务器 A 发送一个 URL 请求，服务器 A 会向另一台服务器 B 获取资源并将此资源响应给浏览器。浏览器的 URL 地址仍然是 A 。
+ 
+2. **重定向（Redirect）**
+
+    客户端（浏览器）向服务器 A 发送一个 URL 请求，服务器 A 告知浏览器资源在服务器 B，浏览器会重新发送请求到服务器 B。浏览器的 URL 地址切换为 B。
+
 
 ```java
-//PersonController.java（web文件夹内）
+// 请求转发
+@RequestMapping("/test1")
+public String test1(){
+    String type = 'forward';
+    return "forward:/test2?type=" + type;
+}
 
-@RestController
-@RequestMapping("/superadmin")
-public class PersonController {
-    @Autowired
-    private PersonService PersonService;
+// 重定向
+@RequestMapping("/test2")
+public String test2(){
+    String type = 'redirect';
+    return "redirect:/test2?type=" + type;
+}
+```
 
-    /**
-     * 获取所有信息
-     *
-     * @return
-     */
-    @RequestMapping(value = "/listPerson", method = RequestMethod.GET)
-    private Map<String, Object> listPerson() {
-        Map<String, Object> modelMap = new HashMap<String, Object>();
-        List<Person> list = new ArrayList<Person>();
-        // 获取列表
-        list = PersonService.getPersonList();
-        modelMap.put("PersonList", list);
-        return modelMap;
-    }
+---
 
-    /**
-     * 通过ID获取信息
-     *
-     * @return
-     */
-    @RequestMapping(value = "/getPersonbyid", method = RequestMethod.GET)
-    private Map<String, Object> getPersonById(Integer PersonId) {
-        Map<String, Object> modelMap = new HashMap<String, Object>();
-        // 获取信息
-        Person Person = PersonService.getPersonById(PersonId);
-        modelMap.put("Person", Person);
-        return modelMap;
-    }
+## Controller 配置
 
-    /**
-     * 添加信息
-     *
-     * @param PersonStr
-     * @param request
-     * @return
-     * @throws IOException
-     * @throws JsonMappingException
-     * @throws JsonParseException
-     */
-    @RequestMapping(value = "/addPerson", method = RequestMethod.POST)
-    private Map<String, Object> addPerson(@RequestBody Person Person)
-            throws JsonParseException, JsonMappingException, IOException {
-        Map<String, Object> modelMap = new HashMap<String, Object>();
-        // 添加区域信息
-        modelMap.put("success", PersonService.addPerson(Person));
-        return modelMap;
-    }
+Spring 的 WebMvcConfigurer 接口定义了 Controller 层配置信息（默认为空实现）。
 
-    /**
-     * 修改信息，主要修改名字
-     *
-     * @param PersonStr
-     * @param request
-     * @return
-     * @throws IOException
-     * @throws JsonMappingException
-     * @throws JsonParseException
-     */
-    @RequestMapping(value = "/modifyPerson", method = RequestMethod.POST)
-    private Map<String, Object> modifyPerson(@RequestBody Person Person)
-            throws JsonParseException, JsonMappingException, IOException {
-        Map<String, Object> modelMap = new HashMap<String, Object>();
-        // 修改信息
-        modelMap.put("success", PersonService.modifyPerson(Person));
-        return modelMap;
-    }
+开发者可以通过实现 WebMvcConfigurer 接口或继承 WebMvcConfigurationSupport 类对以下方法进行重写。
 
-    @RequestMapping(value = "/removePerson", method = RequestMethod.GET)
-    private Map<String, Object> removePerson(Integer PersonId) {
-        Map<String, Object> modelMap = new HashMap<String, Object>();
-        // 修改信息
-        modelMap.put("success", PersonService.deletePerson(PersonId));
-        return modelMap;
-    }
+```java
+@Configuration
+public class WebMVCConfig implements WebMvcConfigurer {
+
+    /** 解决跨域问题 **/
+    @Override
+    public void addCorsMappings(CorsRegistry registry){};
+    /** 添加拦截器 **/
+    @Override
+    public void addInterceptors(InterceptorRegistry registry){};
 
 }
 ```
 
 
+### 跨域问题
+
+配置如何处理跨域请求，否则返回数据会被浏览器拦截。
+
+```java
+@Override
+public void addCorsMappings(CorsRegistry registry) {
+            // 添加映射路径（全部）
+    registry.addMapping("/**")
+            // 放行哪些原始域
+            .allowedOrigins("*")
+            // 是否发送 Cookie 信息
+            .allowCredentials(true)
+            // 放行哪些原始域(请求方式)
+            .allowedMethods("GET","POST", "PUT", "DELETE")
+            // 放行哪些原始域(头部信息)
+            .allowedHeaders("*")
+            // 暴露哪些头部信息
+            .exposedHeaders("Header1", "Header2");
+}
+```
 
 
+**局部跨域**
+
+1. `@CrossOrigin` 注解：在方法上（@RequestMapping）或者在控制器（@Controller）上使用，可以实现局部跨域。
+
+```java
+@RequestMapping("/hello")
+@ResponseBody
+@CrossOrigin("http://localhost:8080") 
+public String index( ){
+    return "Hello World";
+}
+```
+
+2. 使用 HttpServletResponse 对象添加响应头实现局部跨域。
+
+```java
+@RequestMapping("/hello")
+@ResponseBody
+public String index(HttpServletResponse response){
+    response.addHeader("Access-Control-Allow-Origin", "http://localhost:8080");         // 指定端口放行
+    // response.addHeader("Access-Control-Allow-Origin", "*");                             全部放行
+    return "Hello World";
+}
+```
+
+### 拦截器
+
+- **拦截器(Interceptor)**
+
+Java Web 中，在执行 Controller 方法前后对 Controller 请求进行拦截和处理。依赖于 web 框架，在 Spring 配置。在实现上基于 Java 的反射机制。
+
+- **过滤器(Filter)**
+
+Java Web 中，在 request/response 传入 Servlet 前，过滤信息或设置参数。依赖于 servlet 容器，在 web.xml 配置。在实现上基于函数回调。
 
 
+> 两者常用于修改字符编码、删除无用参数、登录校验等。Spring 框架中优先使用拦截器：功能接近、使用更加灵活。
 
-#### 请求转发和重定向
 
-1.请求转发（forward）:
+```java
+// 推荐单独编写拦截器类，直接在配置中引入
 
-当客户端（浏览器）向远程服务器发送一个URL请求后，服务器接收到请求后，会在服务器内部直接通过另外的一个URL获取资源并将此资源再响应给浏览器，请求转发整个过程是一次性的。
- 
-浏览器的URL地址仍然是原来的URL.
- 
-2.重定向（Redirect）:
-    当客户端（浏览器）向服务器发送一个URL请求后，服务器会告诉浏览器，资源在另外一个URL地址上，此时浏览器会重新发送请求到新的资源地址。重定向发送了两次URL请求。
- 
-浏览器上面的URL已经换位了新的资源请求地址。
+@Override
+public void addInterceptors(InterceptorRegistry registry) {
+    // 导入拦截器对象，默认拦截全部
+    InterceptorRegistration addInterceptor = registry.addInterceptor(new RestControllerInterceptor(this.permissionService, this.securityService));
 
-https://www.cnblogs.com/javaxiaobu/p/11149151.html
+    // 排除配置
+    addInterceptor.excludePathPatterns("/error","/login","/user/login");               
+    addInterceptor.excludePathPatterns("/asserts/**");                       
+    addInterceptor.excludePathPatterns("/webjars/**");
+    addInterceptor.excludePathPatterns("/public/**");
+    // 拦截配置
+    addInterceptor.addPathPatterns("/**");
+}
+```
+
+》》》 [跳转到拦截器信息](javaee/spring/SpringAOP?id=拦截器)
+
+
+---
+
+
 
 ---
 

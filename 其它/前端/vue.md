@@ -719,6 +719,11 @@ axios.post('/post',{
 }
 ```
 
+
+> axios 中的 params与 data 传参的区别: 
+>     params 传参，参数以 k=v&k=v 格式放置在 url 中传递。
+>     data 传参，参数会在 form 表单中。
+
 **对于返回响应结果 ret** 
 
 - ret.data : 响应返回数据，可读取返回数据中某一具体属性。
