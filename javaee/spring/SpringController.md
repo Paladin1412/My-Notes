@@ -1,11 +1,42 @@
 # Spring Controller
 
 
-Spring Boot 内集成了 TomCat 服务器，通过控制层接收浏览器的 URL 请求进行操作并返回数据。
 
-底层和浏览器的信息交互仍旧由 servlet 完成。
 
-https://blog.csdn.net/a532672728/article/details/78057218 传递参数
+---
+
+## 服务器控制
+
+### 响应架构
+
+Spring Boot 内集成了 Tomcat 服务器，也可以外接 Tomcat 服务器。通过控制层接收浏览器的 URL 请求进行操作并返回数据。
+
+底层和浏览器的信息交互仍旧由 servlet 完成，服务器整体架构如下：
+
+
+- **Server**： Tomcat 最顶层容器，代表整个服务器。
+
+    - **Service**：服务，对应不同的任务。
+    
+        - **Connector**：有多个，用来处理连接相关的事情，并提供 Socket 到 Request 和 Response 相关转化。
+        
+        - **Container**：只有一个，用于封装和管理 Servlet ，以及处理具体的 Request 请求。
+
+
+### 启动过程
+
+
+main 方法： 实例化 SpringApplication ，执行run方法
+
+run方法：  
+    配置属性、获取监听器，初始化输入参数、配置环境，输出banner
+    创建上下文、预处理上下文、刷新上下文、再刷新上下文：context
+
+refreshApplicationContext方法：通过ServletWebServerFactory接口定义了getwebServer方法，通过其创建webServer并返回（创建时做了两件重要的事情：把Connector对象添加到tomcat中，配置引擎）【TomcatServletWebServerFactory是接口其中一个实现类】
+
+TomcatwebServer类中，规定了Tomcat服务器的启动和关闭方法。
+
+而tomcat的启动主要是实例化两个组件：Connector、Container
 
 ---
 
@@ -194,6 +225,12 @@ public String test2(){
 }
 ```
 
+在拦截器中，常通过修改 HttpSevletRequest 对象实现请求转发。
+
+```java
+request.getRequestDispatcher("login").forward(request,response);
+```
+
 ---
 
 ## Controller 配置
@@ -285,7 +322,7 @@ Java Web 中，在 request/response 传入 Servlet 前，过滤信息或设置�
 @Override
 public void addInterceptors(InterceptorRegistry registry) {
     // 导入拦截器对象，默认拦截全部
-    InterceptorRegistration addInterceptor = registry.addInterceptor(new RestControllerInterceptor(this.permissionService, this.securityService));
+    InterceptorRegistration addInterceptor = registry.addInterceptor(new RestControllerInterceptor());
 
     // 排除配置
     addInterceptor.excludePathPatterns("/error","/login","/user/login");               
@@ -303,8 +340,6 @@ public void addInterceptors(InterceptorRegistry registry) {
 ---
 
 
-
----
 
 ### Spring Boot配置HTTPS
 
@@ -399,25 +434,3 @@ public class TestSslApplication {
 
 https://www.jianshu.com/p/017a7f40efff
 
-**衍生：Spring Boot是如何启动Tomcat的？**
-
-tomcat最顶层容器是Server，代表着整个服务器，一个Server包含多个Service。Service主要包括多个Connector和一个Container。Connector用来处理连接相关的事情，并提供Socket到Request和Response相关转化。Container用于封装和管理Servlet，以及处理具体的Request请求。
-
----
-
-main方法： 实例化SpringApplication，执行run方法
-
-run方法：  
-    配置属性、获取监听器，初始化输入参数、配置环境，输出banner
-    创建上下文、预处理上下文、刷新上下文、再刷新上下文：context
-
-refreshApplicationContext方法：通过ServletWebServerFactory接口定义了getwebServer方法，通过其创建webServer并返回（创建时做了两件重要的事情：把Connector对象添加到tomcat中，配置引擎）【TomcatServletWebServerFactory是接口其中一个实现类】
-
-TomcatwebServer类中，规定了Tomcat服务器的启动和关闭方法。
-
-
-Spring Boot启动过程主要做了以下几件事情：
-
-在SpringBoot中启动tomcat的工作在刷新上下文这一步
-
-而tomcat的启动主要是实例化两个组件：Connector、Container

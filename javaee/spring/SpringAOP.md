@@ -243,7 +243,9 @@ public class ControllerExceptionHandler {
 
 ### 拦截器
 
+拦截器是典型的 AOP 思想应用。在执行 Controller 方法前后对 Controller 请求进行拦截和处理。
 
+拦截器一般通过核对 session 实现校验， HttpSession 对象可以通过 HttpServletRequest 对象获取，也可以直接在方法参数中获取。
 
 ```java
 // 定义拦截器
@@ -255,9 +257,10 @@ public class RestControllerInterceptor extends HandlerInterceptorAdapter {
     // preHandle 预处理
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 检查 session
         HttpSession session = request.getSession();
         if (session.getAttribute(SESSION_KEY) != null) return true;
-        // 跳转登录页面（重定向）
+        // 重定向到登录页面
         request.setAttribute("message","登录失败，请先输入用户名和密码。");
         request.getRequestDispatcher("login").forward(request,response);
         return false;
@@ -272,3 +275,4 @@ public class RestControllerInterceptor extends HandlerInterceptorAdapter {
 
 }
 ```
+

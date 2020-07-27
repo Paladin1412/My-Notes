@@ -86,10 +86,11 @@
 
 ### 分布式
 
-  - [分布式框架 - Hadoop](其它/分布式/hadoop.md)
+  - [分布式基础框架 - Hadoop](其它/分布式/hadoop.md)
   - [调度中心 - zookeeper](其它/分布式/zookeeper.md)
   - [RPC 消息调用 - dubbo & spring cloud](其它/分布式/rpc.md)
-  - [消息队列 - kafka & RMQ](其它/分布式/消息队列.md)
+  - [消息队列 I - kafka](其它/分布式/消息队列.md)
+  - [消息队列 II - RMQ](其它/分布式/消息队列2.md)
 
 
 ## 理论基础

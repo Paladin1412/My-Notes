@@ -99,6 +99,42 @@ public class ServletDemo2 extends HttpServlet {
 }
 ```
 
+HttpServletRequest/HttpServletResponse 对象封装了 HTTP 请求头/响应头中的所有信息，可以通过对象提供的方法获取。
+
+
+```java
+
+```
+
+
+
+
+通过 request 对象提供的 getRequestDispatche(String path)方法返回一个 RequestDispatcher 对象，调用这个对象的 forward 方法可以实现请求转发。
+
+request 对象同时也是一个域对象(Map 容器)，开发人员通过 request 对象在实现转发时，可以通过 setAttribute 方法将数据带给其它 web 资源处理。
+
+
+```java
+// 拦截器
+public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        HttpSession session = request.getSession();
+        if (session.getAttribute(SESSION_KEY) != null) return true;
+        // 通过 ruquest 对象传递一个值
+        request.setAttribute("message","登录失败，请先输入用户名和密码。");
+        // 跳转登录页面（重定向）
+        request.getRequestDispatcher("login").forward(request,response);
+        return false;
+    }
+```
+
+
+
+
+
+
+
+
+
 
 ---
 

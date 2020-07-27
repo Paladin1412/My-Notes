@@ -178,6 +178,8 @@ git checkout -b test                       # 创建并切换到 test 分支
 git merge test                             # test 分支合并到主分支
 git merge origin/master                    # origin/master 合并到主分支   
 git rebase master                          # master 分支合并到当前分支
+
+git branch -D test                         # 删除分支
 ```
 
 当合并分支或者导入远程仓库分支时，常常会出现同一个文件被多个分支修改的情况。这个时候工作区文件会同时记录多个版本的代码，需要开发者通过编辑器解决冲突。
