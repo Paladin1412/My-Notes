@@ -1,6 +1,0 @@
-项目：stream-platform 流数据服务平台
-时间：2020-7-24
-问题描述：spring-session 使用 redis 缓存存储 session，但是 api 访问 session 过多将 redis 占满
-解决方案：重写  SessionRepositoryFilter 类，api 访问不记录 session （未实现）
-
-》》》 github spring-session 278 号问题
