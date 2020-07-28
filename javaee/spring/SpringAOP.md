@@ -243,13 +243,13 @@ public class ControllerExceptionHandler {
 
 ### 拦截器
 
-拦截器是典型的 AOP 思想应用。在执行 Controller 方法前后对 Controller 请求进行拦截和处理。
+拦截器是典型的 AOP 思想应用。在执行 Controller 方法前后对 Controller 请求进行拦截和处理。实现 HandlerInterceptor 接口或者继承 HandlerInterceptorAdapter 类。
 
 拦截器一般通过核对 session 实现校验， HttpSession 对象可以通过 HttpServletRequest 对象获取，也可以直接在方法参数中获取。
 
 ```java
 // 定义拦截器
-public class RestControllerInterceptor extends HandlerInterceptorAdapter {
+public class myInterceptor extends HandlerInterceptorAdapter {
 
     // Session key
     public final static String SESSION_KEY = "user";
@@ -275,4 +275,6 @@ public class RestControllerInterceptor extends HandlerInterceptorAdapter {
 
 }
 ```
+
+
 

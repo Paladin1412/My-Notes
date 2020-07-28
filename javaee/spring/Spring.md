@@ -82,9 +82,23 @@ mapper_path=/mapper/**.xml
 type_alias_package=com.example.demo.entity
 ```
 
-JDBC连接Mysql5驱动： com.mysql.jdbc.Driver
-JDBC连接Mysql6驱动： com.mysql.cj.jdbc.Driver, URL必须要指定时区serverTimezone！
+- JDBC 连接 Mysql5 驱动： com.mysql.jdbc.Driver
+- JDBC 连接 Mysql6 驱动： com.mysql.cj.jdbc.Driver , URL 必须要指定时区 serverTimezone ！
 
+
+**多重配置**
+
+在 Spring Boot 中，我们往往需要配置多个不同的配置文件去适应不同的环境：
+
+- `application-dev.properties` 开发环境
+- `application-test.properties` 测试环境
+- `application-prod.properties` 生产环境
+
+只需要在程序默认配置文件 `application.properties` 中设置环境，就可以使用指定的配置。
+
+```properties
+spring.profiles.active=dev
+```
 
 ### 启动类
 
@@ -105,7 +119,8 @@ public class DemoApplication {
 
 ---
 
-Spring需要定义调度程序servlet，映射和其他支持配置。我们可以使用 web.xml 文件或Initializer类来完成此操作：
+Spring 需要定义调度程序 servlet ，映射和其他支持配置。我们可以使用 web.xml 文件或 Initializer 类来完成此操作：
+
 ```java
 public class MyWebAppInitializer implements WebApplicationInitializer {
   
@@ -121,7 +136,7 @@ public class MyWebAppInitializer implements WebApplicationInitializer {
     }
 }
 ```
-还需要将@EnableWebMvc注释添加到@Configuration类，并定义一个视图解析器来解析从控制器返回的视图：
+还需要将 `@EnableWebMvc` 注释添加到 `@Configuration` 类，并定义一个视图解析器来解析从控制器返回的视图：
 
 ```java
 @EnableWebMvc
